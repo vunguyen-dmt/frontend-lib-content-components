@@ -11,7 +11,6 @@ var _ko_KR = _interopRequireDefault(require("./messages/ko_KR.json"));
 var _pt_BR = _interopRequireDefault(require("./messages/pt_BR.json"));
 var _zh_CN = _interopRequireDefault(require("./messages/zh_CN.json"));
 var _vi = _interopRequireDefault(require("./messages/vi.json"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 // no need to import en messages-- they are in the defaultMessage field
 
@@ -22,7 +21,7 @@ const messages = {
   'zh-cn': _zh_CN.default,
   'ko-kr': _ko_KR.default,
   'pt-br': _pt_BR.default,
-   vi: _vi.default,
+  vi: _vi.default
 };
 var _default = messages;
 exports.default = _default;
