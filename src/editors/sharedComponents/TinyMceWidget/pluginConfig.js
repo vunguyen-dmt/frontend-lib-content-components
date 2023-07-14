@@ -36,6 +36,7 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
       toolbar: toolbar ? mapToolbars([
         [buttons.undo, buttons.redo],
         [buttons.formatSelect],
+        [buttons.fontselect],
         [labelButton],
         [buttons.bold, buttons.italic, buttons.underline, buttons.foreColor, buttons.backColor],
         [
