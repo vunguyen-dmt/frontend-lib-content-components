@@ -53,7 +53,6 @@ export const buttons = StrictDict({
   underline: 'underline',
   fontselect: 'fontselect',
   fontsizeselect: 'fontsizeselect',
-  formatpainter: 'formatpainter',
   image: 'image',
 });
 
