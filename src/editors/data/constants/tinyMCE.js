@@ -51,7 +51,10 @@ export const buttons = StrictDict({
   table: 'table',
   undo: 'undo',
   underline: 'underline',
-  fontselect: 'fontselect'
+  fontselect: 'fontselect',
+  fontsizeselect: 'fontsizeselect',
+  formatpainter: 'formatpainter',
+  image: 'image',
 });
 
 export const plugins = listKeyStore([

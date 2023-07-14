@@ -1,0 +1,18 @@
+{
+    "authoring.baseModal.cancelButtonLabel": "Hủy",
+    "'authoring.texteditor.selectimagemodal.error.errorTitle": "Lỗi",
+    "unexpected.error.message.text": "Đã xảy ra lỗi không mong muốn. Vui lòng nhấp vào nút bên dưới để làm mới trang",
+    "unexpected.error.button.text": "Thử lại",
+    "unexpected.error.returnToUnitPage.button.text": "Trở về trang đơn vị",
+    "unexpected.error.returnToCourseOutline.button.text": "Quay lại phác thảo {outlineType}",
+    "authoring.selectionmodal.search.placeholder": "Tìm kiếm",
+    "authoring.selectionmodal.emptySearchLabel": "Không có kết quả tìm kiếm",
+    "authoring.selectionmodal.spinner.readertext": "Đang tải...",
+    "authoring.selectionmodal.addedDate.label": "Đã thêm ngày {date} lúc {time}",
+    "authoring.texteditor.sourcecodemodal.next.label": "Lưu",
+    "authoring.texteditor.sourcecodemodal.title.label": "Chỉnh sửa mã nguồn",
+    "authoring.editorpage.selecteditor.error": "Lỗi: không thể tìm thấy trình biên tập",
+    "VideoUploadEditor.dropVideoFileHere": "Kéo và thả video vào đây hoặc nhấp để tải lên",
+    "VideoUploadEditor.browse": "Duyệt tập tin"
+
+}
