@@ -13,11 +13,6 @@
     "authoring.texteditor.sourcecodemodal.title.label": "Chỉnh sửa mã nguồn",
     "authoring.editorpage.selecteditor.error": "Lỗi: không thể tìm thấy trình biên tập",
     "VideoUploadEditor.dropVideoFileHere": "Kéo và thả video vào đây hoặc nhấp để tải lên",
-    "VideoUploadEditor.browse": "Duyệt tập tin",
-    "authoring.editorContainer.cancelConfirm.title": "Thoát trình biên tập?",
-    "authoring.editorContainer.cancelConfirm.description": "Bạn có chắc chắn muốn thoát trình biên tập? Tất cả thay đổi chưa lưu sẽ bị mất.",
-    "authoring.problemEditor.blockFailed": "Tải câu hỏi không thành công",
-    "authoring.texteditor.load.error": "Lỗi: không thể tải nội dung văn bản",
-    "authoring.texteditor.spinnerScreenReaderText": "Đang tải"
+    "VideoUploadEditor.browse": "Duyệt tập tin"
 
 }

@@ -63,7 +63,6 @@ const buttons = (0, _utils.StrictDict)({
   underline: 'underline',
   fontselect: 'fontselect',
   fontsizeselect: 'fontsizeselect',
-  formatpainter: 'formatpainter',
   image: 'image'
 });
 exports.buttons = buttons;
