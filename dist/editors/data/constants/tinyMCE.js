@@ -60,7 +60,8 @@ const buttons = (0, _utils.StrictDict)({
   quickLink: 'quicklink',
   table: 'table',
   undo: 'undo',
-  underline: 'underline'
+  underline: 'underline',
+  fontselect: 'fontselect'
 });
 exports.buttons = buttons;
 const plugins = listKeyStore(['link', 'lists', 'codesample', 'emoticons', 'table', 'hr', 'charmap', 'code', 'autoresize', 'image', 'imagetools', 'quickbars']);
