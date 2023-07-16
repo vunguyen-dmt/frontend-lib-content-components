@@ -24,5 +24,8 @@
     "authoring.texteditor.title.loading": "Đang tải...",
     "authoring.texteditor.header.cancelChangesLabel": "Hủy thay đổi và quay lại bối cảnh học tập",
     "authoring.texteditor.header.cancelTitleEdit": "Hủy",
-    "authoring.texteditor.header.saveTitleEdit": "Lưu"
+    "authoring.texteditor.header.saveTitleEdit": "Lưu",
+    "authoring.editorfooter.cancelButton.label": "Hủy",
+    "authoring.editorfooter.savebutton.ariaLabel": "Lưu các thay đổi và quay lại bối cảnh học tập",
+    "authoring.editorfooter.savebutton.label": "Lưu"
 }
