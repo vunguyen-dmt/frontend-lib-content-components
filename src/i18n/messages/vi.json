@@ -18,5 +18,11 @@
     "authoring.editorContainer.cancelConfirm.description": "Bạn có chắc chắn muốn thoát trình biên tập? Tất cả thay đổi chưa lưu sẽ bị mất.",
     "authoring.problemEditor.blockFailed": "Tải câu hỏi không thành công",
     "authoring.texteditor.load.error": "Lỗi: không thể tải nội dung văn bản",
-    "authoring.texteditor.spinnerScreenReaderText": "Đang tải"
+    "authoring.texteditor.spinnerScreenReaderText": "Đang tải",
+    "authoring.editorfooter.save.error": "Lỗi: Nội dung lưu thất bại. Vui lòng kiểm tra lại những thay đổi gần đây và thử lại sau.",
+    "authoring.editorfooter.cancelButton.ariaLabel": "Hủy các thay đổi và quay lại bối cảnh học tập",
+    "authoring.texteditor.title.loading": "Đang tải...",
+    "authoring.texteditor.header.cancelChangesLabel": "Hủy thay đổi và quay lại bối cảnh học tập",
+    "authoring.texteditor.header.cancelTitleEdit": "Hủy",
+    "authoring.texteditor.header.saveTitleEdit": "Lưu"
 }

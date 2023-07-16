@@ -1,7 +1,6 @@
 import { defineMessages } from '@edx/frontend-platform/i18n';
 
 const messages = defineMessages({
-
   contentSaveFailed: {
     id: 'authoring.editorfooter.save.error',
     defaultMessage: 'Error: Content save failed. Please check recent changes and try again later.',
