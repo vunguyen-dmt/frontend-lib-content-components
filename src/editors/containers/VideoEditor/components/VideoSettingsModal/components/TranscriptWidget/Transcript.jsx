@@ -25,6 +25,7 @@ import messages from './messages';
 
 export const hooks = {
   state: {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
     inDeleteConfirmation: (args) => React.useState(args),
   },
   setUpDeleteConfirmation: () => {
@@ -46,6 +47,7 @@ export const Transcript = ({
 }) => {
   const { inDeleteConfirmation, launchDeleteConfirmation, cancelDelete } = module.hooks.setUpDeleteConfirmation();
   return (
+    // eslint-disable-next-line react/jsx-no-useless-fragment
     <>
       {inDeleteConfirmation
         ? (
