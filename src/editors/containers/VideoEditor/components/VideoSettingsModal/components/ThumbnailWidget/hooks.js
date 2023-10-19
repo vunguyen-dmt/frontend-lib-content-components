@@ -5,7 +5,6 @@ import * as constants from './constants';
 import * as module from './hooks';
 
 export const state = {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   showSizeError: (args) => React.useState(args),
 };
 
@@ -86,9 +85,7 @@ export const checkValidSize = ({ file, onSizeFail }) => {
 };
 
 export const fileInput = ({ setThumbnailSrc, imgRef, fileSizeError }) => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const dispatch = useDispatch();
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const ref = React.useRef();
   const click = () => ref.current.click();
   const addFile = (e) => {

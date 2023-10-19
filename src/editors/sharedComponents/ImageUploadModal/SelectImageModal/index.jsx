@@ -25,7 +25,7 @@ export const SelectImageModal = ({
     galleryProps,
     searchSortProps,
     selectBtnProps,
-  } = hooks.imgHooks({ setSelection, clearSelection, images: images.current });
+  } = hooks.imgHooks({ setSelection, clearSelection, images });
 
   const modalMessages = {
     confirmMsg: messages.nextButtonLabel,

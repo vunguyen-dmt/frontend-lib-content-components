@@ -51,6 +51,11 @@ export const buttons = StrictDict({
   table: 'table',
   undo: 'undo',
   underline: 'underline',
+  fontselect: 'fontselect',
+  fontsizeselect: 'fontsizeselect',
+  image: 'image',
+  wirisMathType: 'tiny_mce_wiris_formulaEditor',
+  wirisChemType: 'tiny_mce_wiris_formulaEditorChemistry'
 });
 
 export const plugins = listKeyStore([

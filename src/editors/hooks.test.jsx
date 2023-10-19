@@ -100,16 +100,6 @@ describe('hooks', () => {
       output();
       expect(spy).toHaveBeenCalledWith(destination);
     });
-    it('should call returnFunction and return null', () => {
-      const returnFunction = jest.fn(() => (response) => response);
-      output = hooks.navigateCallback({
-        destination,
-        returnFunction,
-      });
-      const returnedOutput = output();
-      expect(returnFunction).toHaveBeenCalled();
-      expect(returnedOutput).toEqual(undefined);
-    });
   });
 
   describe('nullMethod', () => {
@@ -146,14 +136,14 @@ describe('hooks', () => {
         analytics,
         dispatch,
       });
-      expect(dispatch).toHaveBeenCalledWith(thunkActions.app.saveBlock(
-        content,
-        navigateCallback({
+      expect(dispatch).toHaveBeenCalledWith(thunkActions.app.saveBlock({
+        returnToUnit: navigateCallback({
           destination,
           analyticsEvent: analyticsEvt.editorSaveClick,
           analytics,
         }),
-      ));
+        content,
+      }));
     });
   });
 

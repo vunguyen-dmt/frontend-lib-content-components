@@ -1,7 +1,5 @@
-/* eslint-disable no-import-assign */
 import { actions } from '..';
 import { camelizeKeys } from '../../../utils';
-import { RequestKeys } from '../../constants/requests';
 import * as thunkActions from './app';
 
 jest.mock('./requests', () => ({
@@ -20,12 +18,7 @@ jest.mock('../../../utils', () => ({
   ...jest.requireActual('../../../utils'),
 }));
 
-const testValue = {
-  data: {
-    assets: 'test VALUE',
-    videos: 'vIDeO vALUe',
-  },
-};
+const testValue = { data: { assets: 'test VALUE' } };
 
 describe('app thunkActions', () => {
   let dispatch;
@@ -46,14 +39,6 @@ describe('app thunkActions', () => {
       dispatchedAction.fetchBlock.onSuccess(testValue);
       expect(dispatch).toHaveBeenCalledWith(actions.app.setBlockValue(testValue));
     });
-    it('dispatches failRequest with fetchBlock requestKey on failure', () => {
-      dispatch.mockClear();
-      dispatchedAction.fetchBlock.onFailure(testValue);
-      expect(dispatch).toHaveBeenCalledWith(actions.requests.failRequest({
-        requestKey: RequestKeys.fetchBlock,
-        error: testValue,
-      }));
-    });
   });
 
   describe('fetchStudioView', () => {
@@ -69,13 +54,10 @@ describe('app thunkActions', () => {
       dispatchedAction.fetchStudioView.onSuccess(testValue);
       expect(dispatch).toHaveBeenCalledWith(actions.app.setStudioView(testValue));
     });
-    it('dispatches failRequest with fetchStudioView requestKey on failure', () => {
+    it('dispatches setStudioView on failure', () => {
       dispatch.mockClear();
       dispatchedAction.fetchStudioView.onFailure(testValue);
-      expect(dispatch).toHaveBeenCalledWith(actions.requests.failRequest({
-        requestKey: RequestKeys.fetchStudioView,
-        error: testValue,
-      }));
+      expect(dispatch).toHaveBeenCalledWith(actions.app.setStudioView(testValue));
     });
   });
 
@@ -92,57 +74,10 @@ describe('app thunkActions', () => {
       dispatchedAction.fetchUnit.onSuccess(testValue);
       expect(dispatch).toHaveBeenCalledWith(actions.app.setUnitUrl(testValue));
     });
-    it('dispatches failRequest with fetchUnit requestKey on failure', () => {
+    it('dispatches actions.app.setUnitUrl on failure', () => {
       dispatch.mockClear();
       dispatchedAction.fetchUnit.onFailure(testValue);
-      expect(dispatch).toHaveBeenCalledWith(actions.requests.failRequest({
-        requestKey: RequestKeys.fetchUnit,
-        error: testValue,
-      }));
-    });
-  });
-  describe('fetchAssets', () => {
-    beforeEach(() => {
-      thunkActions.fetchAssets()(dispatch);
-      [[dispatchedAction]] = dispatch.mock.calls;
-    });
-    it('dispatches fetchAssets action', () => {
-      expect(dispatchedAction.fetchAssets).not.toEqual(undefined);
-    });
-    it('dispatches actions.app.setAssets on success', () => {
-      dispatch.mockClear();
-      dispatchedAction.fetchAssets.onSuccess(testValue);
-      expect(dispatch).toHaveBeenCalledWith(actions.app.setAssets(testValue));
-    });
-    it('dispatches failRequest with fetchAssets requestKey on failure', () => {
-      dispatch.mockClear();
-      dispatchedAction.fetchAssets.onFailure(testValue);
-      expect(dispatch).toHaveBeenCalledWith(actions.requests.failRequest({
-        requestKey: RequestKeys.fetchAssets,
-        error: testValue,
-      }));
-    });
-  });
-  describe('fetchVideos', () => {
-    beforeEach(() => {
-      thunkActions.fetchVideos()(dispatch);
-      [[dispatchedAction]] = dispatch.mock.calls;
-    });
-    it('dispatches fetchAssets action', () => {
-      expect(dispatchedAction.fetchVideos).not.toEqual(undefined);
-    });
-    it('dispatches actions.app.setVideos on success', () => {
-      dispatch.mockClear();
-      dispatchedAction.fetchVideos.onSuccess(testValue);
-      expect(dispatch).toHaveBeenCalledWith(actions.app.setVideos(testValue.data.videos));
-    });
-    it('dispatches failRequest with fetchVideos requestKey on failure', () => {
-      dispatch.mockClear();
-      dispatchedAction.fetchVideos.onFailure(testValue);
-      expect(dispatch).toHaveBeenCalledWith(actions.requests.failRequest({
-        requestKey: RequestKeys.fetchVideos,
-        error: testValue,
-      }));
+      expect(dispatch).toHaveBeenCalledWith(actions.app.setUnitUrl(testValue));
     });
   });
   describe('fetchCourseDetails', () => {
@@ -158,13 +93,10 @@ describe('app thunkActions', () => {
       dispatchedAction.fetchCourseDetails.onSuccess(testValue);
       expect(dispatch).toHaveBeenCalledWith(actions.app.setCourseDetails(testValue));
     });
-    it('dispatches failRequest with fetchCourseDetails requestKey on failure', () => {
+    it('dispatches actions.app.setUnitUrl on failure', () => {
       dispatch.mockClear();
       dispatchedAction.fetchCourseDetails.onFailure(testValue);
-      expect(dispatch).toHaveBeenCalledWith(actions.requests.failRequest({
-        requestKey: RequestKeys.fetchCourseDetails,
-        error: testValue,
-      }));
+      expect(dispatch).toHaveBeenCalledWith(actions.app.setCourseDetails(testValue));
     });
   });
   describe('initialize', () => {
@@ -206,7 +138,7 @@ describe('app thunkActions', () => {
     let calls;
     beforeEach(() => {
       returnToUnit = jest.fn();
-      thunkActions.saveBlock(testValue, returnToUnit)(dispatch);
+      thunkActions.saveBlock({ content: testValue, returnToUnit })(dispatch);
       calls = dispatch.mock.calls;
     });
     it('dispatches actions.app.setBlockContent with content, before dispatching saveBlock', () => {
@@ -223,6 +155,24 @@ describe('app thunkActions', () => {
       calls[1][0].saveBlock.onSuccess(response);
       expect(dispatch).toHaveBeenCalledWith(actions.app.setSaveResponse(response));
       expect(returnToUnit).toHaveBeenCalled();
+    });
+  });
+  describe('fetchAssets', () => {
+    it('dispatches fetchAssets action with setAssets for onSuccess param', () => {
+      const response = { data: { assets: 'testRESPONSE' } };
+      thunkActions.fetchAssets()(dispatch);
+      const [[dispatchCall]] = dispatch.mock.calls;
+      dispatchCall.fetchAssets.onSuccess(response);
+      expect(dispatch).toHaveBeenCalledWith(actions.app.setAssets(response));
+    });
+  });
+  describe('fetchVideos', () => {
+    it('dispatches fetchVideos action with setVideos for onSuccess param', () => {
+      const response = { data: { videos: 'testRESPONSE' } };
+      thunkActions.fetchVideos()(dispatch);
+      const [[dispatchCall]] = dispatch.mock.calls;
+      dispatchCall.fetchVideos.onSuccess(response);
+      expect(dispatch).toHaveBeenCalledWith(actions.app.setVideos(response.data.videos));
     });
   });
   describe('uploadImage', () => {

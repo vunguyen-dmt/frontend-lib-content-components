@@ -25,7 +25,6 @@ import ExplanationWidget from './ExplanationWidget';
 import { saveBlock } from '../../../../hooks';
 
 export const EditProblemView = ({
-  returnFunction,
   // redux
   problemType,
   problemState,
@@ -51,7 +50,6 @@ export const EditProblemView = ({
         assets,
         lmsEndpointUrl,
       })}
-      returnFunction={returnFunction}
     >
       <AlertModal
         title={isAdvancedProblemType ? (
@@ -73,7 +71,6 @@ export const EditProblemView = ({
                   assets,
                   lmsEndpointUrl,
                 })(),
-                returnFunction,
                 destination: returnUrl,
                 dispatch,
                 analytics,
@@ -120,12 +117,10 @@ export const EditProblemView = ({
 EditProblemView.defaultProps = {
   assets: null,
   lmsEndpointUrl: null,
-  returnFunction: null,
 };
 
 EditProblemView.propTypes = {
   problemType: PropTypes.string.isRequired,
-  returnFunction: PropTypes.func,
   // eslint-disable-next-line
   problemState: PropTypes.any.isRequired,
   assets: PropTypes.shape({}),

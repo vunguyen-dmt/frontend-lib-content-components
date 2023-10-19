@@ -9,18 +9,14 @@ import messages from './messages';
 
 export const hooks = {
   state: {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
     isDismissed: (val) => React.useState(val),
   },
   dismissalHooks: ({ dismissError, isError }) => {
     const [isDismissed, setIsDismissed] = hooks.state.isDismissed(false);
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    React.useEffect(
-      () => {
-        setIsDismissed(isDismissed && !isError);
-      },
-      [isError],
-    );
+    React.useEffect(() => {
+      setIsDismissed(isDismissed && !isError);
+    },
+    [isError]);
     return {
       isDismissed,
       dismissAlert: () => {

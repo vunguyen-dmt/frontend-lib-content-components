@@ -199,6 +199,7 @@ const getStyles = () => (
   }
   .mce-content-body img {
       max-width: 100%;
+      height: auto;
   }
   .mce-content-body pre {
     margin: 1em 0;

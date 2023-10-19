@@ -1,4 +1,3 @@
-/* eslint-disable no-import-assign */
 import * as utils from '../../../utils';
 import * as api from './api';
 import * as mockApi from './mockApi';
@@ -44,7 +43,7 @@ const { camelize } = utils;
 
 const { apiMethods } = api;
 
-const blockId = 'block-v1-coursev1:2uX@4345432';
+const blockId = 'coursev1:2uX@4345432';
 const learningContextId = 'demo2uX';
 const studioEndpointUrl = 'hortus.coa';
 const title = 'remember this needs to go into metadata to save';
@@ -575,7 +574,7 @@ describe('cms api', () => {
   });
   describe('fetchVideoFeatures', () => {
     it('should call get with url.videoFeatures', () => {
-      const args = { studioEndpointUrl };
+      const args = { studioEndpointUrl, learningContextId };
       apiMethods.fetchVideoFeatures({ ...args });
       expect(get).toHaveBeenCalledWith(urls.videoFeatures({ ...args }));
     });

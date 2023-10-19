@@ -3,7 +3,6 @@ import { RandomizationTypes, RandomizationTypesKeys } from '../../../../../../..
 import * as module from './hooks';
 
 export const state = {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   summary: (val) => useState(val),
 };
 
