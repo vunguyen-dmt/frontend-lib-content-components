@@ -1,0 +1,37 @@
+.wrs_modal_dialogContainer {
+    .wrs_modal_title_bar {
+        background-color: #00262b;
+    }
+
+    .wrs_modal_button_accept {
+        background-color: #00262b;
+        border: 1px solid #00262b;
+    }
+    .wrs_editor .wrs_toolbar .wrs_header > button, .wrs_editor .wrs_toolbar .wrs_header > div {
+        background: #00262b;
+        border-bottom: 1px solid #00262b;
+    }
+    .wrs_editor .wrs_panelContainer {
+        background: white;
+    }
+
+    .wrs_editor .wrs_toolbar .wrs_header > div.wrs_selected, .wrs_editor .wrs_toolbar .wrs_header > button.wrs_selected {
+        background: white;
+    }
+    .wrs_editor.wrs_withHand:not(.wrs_handDisabled):not(.wrs_toolbarHidden) .wrs_handWrapper > input {
+        background: #00262b url(https://www.wiris.net/demo/editor/resources/decoration/open_hand.svg) center center no-repeat
+    }
+    .wrs_linksContainer {
+        display: none;
+    }
+    .wrs_bottom_right_resizer {
+        color: #00262b;
+    }
+    .wrs_modal_button_cancel, .wrs_modal_button_cancel:hover, .wrs_modal_button_cancel:visited, .wrs_modal_button_cancel:active, .wrs_modal_button_cancel:focus {
+        background-color: transparent;
+        border: none;
+        &:hover {
+            background-color: #E1DDDB;
+        }
+    }
+}

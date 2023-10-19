@@ -18,8 +18,6 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
 
   return (
     StrictDict({
-      external_plugins: { tiny_mce_wiris: 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js' },
-      draggable_modal: true,
       plugins: [
         plugins.link,
         plugins.lists,
@@ -106,6 +104,9 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
         forced_root_block: defaultFormat,
         external_plugins: { tiny_mce_wiris: 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js' },
         draggable_modal: true,
+        mathTypeParameters: {
+          editorParameters: { language: 'vi' },
+        }
       },
     })
   );
