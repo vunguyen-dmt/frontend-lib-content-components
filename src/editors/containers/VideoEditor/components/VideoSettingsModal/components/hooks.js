@@ -74,7 +74,6 @@ export const updatedObject = (obj, index, val) => ({ ...obj, [index]: val });
  * @param {string} key - form key
  * @return {func} - callback taking a value and updating the video redux field
  */
-// eslint-disable-next-line react-hooks/rules-of-hooks
 export const updateFormField = ({ dispatch, key }) => useCallback(
   (val) => dispatch(actions.video.updateField({ [key]: val })),
   [],
@@ -94,17 +93,14 @@ export const updateFormField = ({ dispatch, key }) => useCallback(
  *   setAll - sets form field in hook AND redux
  */
 export const valueHooks = ({ dispatch, key }) => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const formValue = useSelector(selectors.video[key]);
   const [local, setLocal] = module.state[key](formValue);
   const setFormValue = module.updateFormField({ dispatch, key });
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     setLocal(formValue);
   }, [formValue]);
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const setAll = useCallback(
     (val) => {
       setLocal(val);

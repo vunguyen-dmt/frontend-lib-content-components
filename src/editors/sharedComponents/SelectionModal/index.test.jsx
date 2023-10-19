@@ -1,14 +1,13 @@
 import React from 'react';
-
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import { render, screen } from '@testing-library/react';
-
+import { formatMessage } from '../../../testUtils';
 import SelectionModal from '.';
 import '@testing-library/jest-dom';
 
 const props = {
-  isOpen: true,
-  close: jest.fn(),
+  isOpen: jest.fn(),
+  isClose: jest.fn(),
   size: 'fullscreen',
   isFullscreenScroll: false,
   galleryError: {
@@ -36,13 +35,7 @@ const props = {
     click: 'imgHooks.fileInput.click',
     ref: 'imgHooks.fileInput.ref',
   },
-  galleryProps: {
-    gallery: 'props',
-    emptyGalleryLabel: {
-      id: 'emptyGalleryMsg',
-      defaultMessage: 'Empty Gallery',
-    },
-  },
+  galleryProps: { gallery: 'props' },
   searchSortProps: { search: 'sortProps' },
   selectBtnProps: { select: 'btnProps' },
   acceptedFiles: { png: '.png' },
@@ -76,6 +69,7 @@ const props = {
   isLoaded: true,
   isFetchError: false,
   isUploadError: false,
+  intl: { formatMessage },
 };
 
 const mockGalleryFn = jest.fn();
@@ -85,22 +79,20 @@ const mockUploadErrorAlertFn = jest.fn();
 
 jest.mock('../BaseModal', () => 'BaseModal');
 jest.mock('./SearchSort', () => 'SearchSort');
-jest.mock('./Gallery', () => function mockGallery(componentProps) {
+jest.mock('./Gallery', () => (componentProps) => {
   mockGalleryFn(componentProps);
   return (<div>Gallery</div>);
 });
-jest.mock('../FileInput', () => function mockFileInput(componentProps) {
+jest.mock('../FileInput', () => (componentProps) => {
   mockFileInputFn(componentProps);
   return (<div>FileInput</div>);
 });
-jest.mock('../ErrorAlerts/ErrorAlert', () => function mockErrorAlert() {
-  return <div>ErrorAlert</div>;
-});
-jest.mock('../ErrorAlerts/FetchErrorAlert', () => function mockFetchErrorAlert(componentProps) {
+jest.mock('../ErrorAlerts/ErrorAlert', () => () => (<div>ErrorAlert</div>));
+jest.mock('../ErrorAlerts/FetchErrorAlert', () => (componentProps) => {
   mockFetchErrorAlertFn(componentProps);
   return (<div>FetchErrorAlert</div>);
 });
-jest.mock('../ErrorAlerts/UploadErrorAlert', () => function mockUploadErrorAlert(componentProps) {
+jest.mock('../ErrorAlerts/UploadErrorAlert', () => (componentProps) => {
   mockUploadErrorAlertFn(componentProps);
   return (<div>UploadErrorAlert</div>);
 });
@@ -111,7 +103,7 @@ describe('Selection Modal', () => {
   });
   test('rendering correctly with expected Input', async () => {
     render(
-      <IntlProvider locale="en">
+      <IntlProvider>
         <SelectionModal {...props} />
       </IntlProvider>,
     );
@@ -124,6 +116,7 @@ describe('Selection Modal', () => {
       expect.objectContaining({
         ...props.galleryProps,
         isLoaded: props.isLoaded,
+        show: true,
       }),
     );
     expect(mockFetchErrorAlertFn).toHaveBeenCalledWith(
@@ -147,11 +140,11 @@ describe('Selection Modal', () => {
   });
   test('rendering correctly with errors', () => {
     render(
-      <IntlProvider locale="en">
+      <IntlProvider>
         <SelectionModal {...props} isFetchError />
       </IntlProvider>,
     );
-    expect(screen.queryByText('Gallery')).not.toBeInTheDocument();
+    expect(screen.getByText('Gallery')).toBeInTheDocument();
     expect(screen.getByText('FileInput')).toBeInTheDocument();
     expect(screen.getByText('FetchErrorAlert')).toBeInTheDocument();
     expect(screen.getByText('UploadErrorAlert')).toBeInTheDocument();
@@ -162,10 +155,17 @@ describe('Selection Modal', () => {
         message: props.modalMessages.fetchError,
       }),
     );
+    expect(mockGalleryFn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        ...props.galleryProps,
+        isLoaded: props.isLoaded,
+        show: false,
+      }),
+    );
   });
   test('rendering correctly with loading', () => {
     render(
-      <IntlProvider locale="en">
+      <IntlProvider>
         <SelectionModal {...props} isLoaded={false} />
       </IntlProvider>,
     );
@@ -178,6 +178,7 @@ describe('Selection Modal', () => {
       expect.objectContaining({
         ...props.galleryProps,
         isLoaded: false,
+        show: true,
       }),
     );
   });

@@ -5,7 +5,8 @@ import { Button, Stack } from '@edx/paragon';
 import { Add } from '@edx/paragon/icons';
 import {
   FormattedMessage,
-  useIntl,
+  injectIntl,
+  intlShape,
 } from '@edx/frontend-platform/i18n';
 
 import BaseModal from '../BaseModal';
@@ -32,8 +33,9 @@ export const SelectionModal = ({
   isLoaded,
   isFetchError,
   isUploadError,
+  // injected
+  intl,
 }) => {
-  const intl = useIntl();
   const {
     confirmMsg,
     uploadButtonMsg,
@@ -52,6 +54,7 @@ export const SelectionModal = ({
 
   const galleryPropsValues = {
     isLoaded,
+    show: showGallery,
     ...galleryProps,
   };
   return (
@@ -106,7 +109,7 @@ export const SelectionModal = ({
         <FormattedMessage {...galleryError.message} />
       </ErrorAlert>
       <Stack gap={2}>
-        {showGallery && <Gallery {...galleryPropsValues} />}
+        <Gallery {...galleryPropsValues} />
         <FileInput fileInput={fileInput} acceptedFiles={Object.values(acceptedFiles).join()} />
       </Stack>
     </BaseModal>
@@ -152,6 +155,8 @@ SelectionModal.propTypes = {
   isLoaded: PropTypes.bool.isRequired,
   isFetchError: PropTypes.bool.isRequired,
   isUploadError: PropTypes.bool.isRequired,
+  // injected
+  intl: intlShape.isRequired,
 };
 
-export default SelectionModal;
+export default injectIntl(SelectionModal);

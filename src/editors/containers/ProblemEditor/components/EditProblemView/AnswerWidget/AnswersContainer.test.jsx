@@ -18,9 +18,7 @@ jest.mock('@edx/frontend-platform/i18n', () => ({
   getLocale: jest.fn(),
 }));
 
-jest.mock('./AnswerOption', () => function mockAnswerOption() {
-  return <div>MockAnswerOption</div>;
-});
+jest.mock('./AnswerOption', () => () => <div>MockAnswerOption</div>);
 
 jest.mock('../../../../../data/redux', () => ({
   actions: {

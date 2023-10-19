@@ -3,65 +3,45 @@ import { StrictDict, camelizeKeys } from '../../../utils';
 import { actions } from '..';
 import * as requests from './requests';
 import * as module from './app';
-import { RequestKeys } from '../../constants/requests';
 
 export const fetchBlock = () => (dispatch) => {
   dispatch(requests.fetchBlock({
     onSuccess: (response) => dispatch(actions.app.setBlockValue(response)),
-    onFailure: (error) => dispatch(actions.requests.failRequest({
-      requestKey: RequestKeys.fetchBlock,
-      error,
-    })),
+    // eslint-disable-next-line
+    onFailure: (e) => console.log({ fetchFailure: e }),
   }));
 };
 
 export const fetchStudioView = () => (dispatch) => {
   dispatch(requests.fetchStudioView({
     onSuccess: (response) => dispatch(actions.app.setStudioView(response)),
-    onFailure: (error) => dispatch(actions.requests.failRequest({
-      requestKey: RequestKeys.fetchStudioView,
-      error,
-    })),
+    onFailure: (e) => dispatch(actions.app.setStudioView(e)),
   }));
 };
 
 export const fetchUnit = () => (dispatch) => {
   dispatch(requests.fetchUnit({
     onSuccess: (response) => dispatch(actions.app.setUnitUrl(response)),
-    onFailure: (error) => dispatch(actions.requests.failRequest({
-      requestKey: RequestKeys.fetchUnit,
-      error,
-    })),
+    onFailure: (e) => dispatch(actions.app.setUnitUrl(e)),
   }));
 };
 
 export const fetchAssets = () => (dispatch) => {
   dispatch(requests.fetchAssets({
     onSuccess: (response) => dispatch(actions.app.setAssets(response)),
-    onFailure: (error) => dispatch(actions.requests.failRequest({
-      requestKey: RequestKeys.fetchAssets,
-      error,
-    })),
   }));
 };
 
 export const fetchVideos = () => (dispatch) => {
   dispatch(requests.fetchVideos({
     onSuccess: (response) => dispatch(actions.app.setVideos(response.data.videos)),
-    onFailure: (error) => dispatch(actions.requests.failRequest({
-      requestKey: RequestKeys.fetchVideos,
-      error,
-    })),
   }));
 };
 
 export const fetchCourseDetails = () => (dispatch) => {
   dispatch(requests.fetchCourseDetails({
     onSuccess: (response) => dispatch(actions.app.setCourseDetails(response)),
-    onFailure: (error) => dispatch(actions.requests.failRequest({
-      requestKey: RequestKeys.fetchCourseDetails,
-      error,
-    })),
+    onFailure: (e) => dispatch(actions.app.setCourseDetails(e)),
   }));
 };
 
@@ -84,13 +64,13 @@ export const initialize = (data) => (dispatch) => {
 /**
  * @param {func} onSuccess
  */
-export const saveBlock = (content, returnToUnit) => (dispatch) => {
+export const saveBlock = ({ content, returnToUnit }) => (dispatch) => {
   dispatch(actions.app.setBlockContent(content));
   dispatch(requests.saveBlock({
     content,
     onSuccess: (response) => {
       dispatch(actions.app.setSaveResponse(response));
-      returnToUnit(response.data);
+      returnToUnit();
     },
   }));
 };

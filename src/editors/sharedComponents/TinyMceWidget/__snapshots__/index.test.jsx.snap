@@ -1,17 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`TinyMceWidget snapshots ImageUploadModal is not rendered 1`] = `
-<Component
-  store={
-    Object {
-      "dispatch": [Function],
-      "getState": [Function],
-      "replaceReducer": [Function],
-      "subscribe": [Function],
-      Symbol(Symbol.observable): [Function],
-    }
-  }
->
+<Fragment>
   <SourceCodeModal
     close={[MockFunction modal.closeModal]}
     editorRef={
@@ -28,53 +18,32 @@ exports[`TinyMceWidget snapshots ImageUploadModal is not rendered 1`] = `
     editorConfig={
       Object {
         "clearSelection": [MockFunction hooks.selectedImage.clearSelection],
-        "content": undefined,
-        "editorContentHtml": undefined,
         "editorRef": Object {
           "current": Object {
             "value": "something",
           },
         },
         "editorType": "text",
-        "images": Object {
-          "current": Array [
-            Object {
-              "externalUrl": "/assets/sOmEaSsET",
-            },
-          ],
-        },
-        "initializeEditor": undefined,
+        "images": Array [
+          Object {
+            "staTICUrl": "/assets/sOmEaSsET",
+          },
+        ],
         "isLibrary": true,
         "lmsEndpointUrl": "sOmEvaLue.cOm",
-        "minHeight": undefined,
         "openImgModal": [MockFunction modal.openModal],
         "openSourceCodeModal": [MockFunction modal.openModal],
-        "placeholder": undefined,
-        "selection": "hooks.selectedImage.selection",
-        "setEditorRef": undefined,
         "setSelection": [MockFunction hooks.selectedImage.setSelection],
         "studioEndpointUrl": "sOmEoThERvaLue.cOm",
-        "updateContent": [Function],
       }
     }
     id="sOMeiD"
-    onEditorChange={[Function]}
   />
-</Component>
+</Fragment>
 `;
 
 exports[`TinyMceWidget snapshots SourcecodeModal is not rendered 1`] = `
-<Component
-  store={
-    Object {
-      "dispatch": [Function],
-      "getState": [Function],
-      "replaceReducer": [Function],
-      "subscribe": [Function],
-      Symbol(Symbol.observable): [Function],
-    }
-  }
->
+<Fragment>
   <ImageUploadModal
     clearSelection={[MockFunction hooks.selectedImage.clearSelection]}
     close={[MockFunction modal.closeModal]}
@@ -87,13 +56,11 @@ exports[`TinyMceWidget snapshots SourcecodeModal is not rendered 1`] = `
     }
     editorType="problem"
     images={
-      Object {
-        "current": Array [
-          Object {
-            "externalUrl": "/assets/sOmEaSsET",
-          },
-        ],
-      }
+      Array [
+        Object {
+          "staTICUrl": "/assets/sOmEaSsET",
+        },
+      ]
     }
     isOpen={false}
     lmsEndpointUrl="sOmEvaLue.cOm"
@@ -105,53 +72,32 @@ exports[`TinyMceWidget snapshots SourcecodeModal is not rendered 1`] = `
     editorConfig={
       Object {
         "clearSelection": [MockFunction hooks.selectedImage.clearSelection],
-        "content": undefined,
-        "editorContentHtml": undefined,
         "editorRef": Object {
           "current": Object {
             "value": "something",
           },
         },
         "editorType": "problem",
-        "images": Object {
-          "current": Array [
-            Object {
-              "externalUrl": "/assets/sOmEaSsET",
-            },
-          ],
-        },
-        "initializeEditor": undefined,
+        "images": Array [
+          Object {
+            "staTICUrl": "/assets/sOmEaSsET",
+          },
+        ],
         "isLibrary": false,
         "lmsEndpointUrl": "sOmEvaLue.cOm",
-        "minHeight": undefined,
         "openImgModal": [MockFunction modal.openModal],
         "openSourceCodeModal": [MockFunction modal.openModal],
-        "placeholder": undefined,
-        "selection": "hooks.selectedImage.selection",
-        "setEditorRef": undefined,
         "setSelection": [MockFunction hooks.selectedImage.setSelection],
         "studioEndpointUrl": "sOmEoThERvaLue.cOm",
-        "updateContent": [Function],
       }
     }
     id="sOMeiD"
-    onEditorChange={[Function]}
   />
-</Component>
+</Fragment>
 `;
 
 exports[`TinyMceWidget snapshots renders as expected with default behavior 1`] = `
-<Component
-  store={
-    Object {
-      "dispatch": [Function],
-      "getState": [Function],
-      "replaceReducer": [Function],
-      "subscribe": [Function],
-      Symbol(Symbol.observable): [Function],
-    }
-  }
->
+<Fragment>
   <ImageUploadModal
     clearSelection={[MockFunction hooks.selectedImage.clearSelection]}
     close={[MockFunction modal.closeModal]}
@@ -164,13 +110,11 @@ exports[`TinyMceWidget snapshots renders as expected with default behavior 1`] =
     }
     editorType="text"
     images={
-      Object {
-        "current": Array [
-          Object {
-            "externalUrl": "/assets/sOmEaSsET",
-          },
-        ],
-      }
+      Array [
+        Object {
+          "staTICUrl": "/assets/sOmEaSsET",
+        },
+      ]
     }
     isOpen={false}
     lmsEndpointUrl="sOmEvaLue.cOm"
@@ -193,37 +137,26 @@ exports[`TinyMceWidget snapshots renders as expected with default behavior 1`] =
     editorConfig={
       Object {
         "clearSelection": [MockFunction hooks.selectedImage.clearSelection],
-        "content": undefined,
-        "editorContentHtml": undefined,
         "editorRef": Object {
           "current": Object {
             "value": "something",
           },
         },
         "editorType": "text",
-        "images": Object {
-          "current": Array [
-            Object {
-              "externalUrl": "/assets/sOmEaSsET",
-            },
-          ],
-        },
-        "initializeEditor": undefined,
+        "images": Array [
+          Object {
+            "staTICUrl": "/assets/sOmEaSsET",
+          },
+        ],
         "isLibrary": false,
         "lmsEndpointUrl": "sOmEvaLue.cOm",
-        "minHeight": undefined,
         "openImgModal": [MockFunction modal.openModal],
         "openSourceCodeModal": [MockFunction modal.openModal],
-        "placeholder": undefined,
-        "selection": "hooks.selectedImage.selection",
-        "setEditorRef": undefined,
         "setSelection": [MockFunction hooks.selectedImage.setSelection],
         "studioEndpointUrl": "sOmEoThERvaLue.cOm",
-        "updateContent": [Function],
       }
     }
     id="sOMeiD"
-    onEditorChange={[Function]}
   />
-</Component>
+</Fragment>
 `;

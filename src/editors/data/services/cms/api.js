@@ -143,7 +143,7 @@ export const apiMethods = {
       response = {
         data: content.olx,
         category: blockType,
-        courseKey: learningContextId,
+        couseKey: learningContextId,
         has_changes: true,
         id: blockId,
         metadata: { display_name: title, ...content.settings },
@@ -204,8 +204,9 @@ export const apiMethods = {
   ),
   fetchVideoFeatures: ({
     studioEndpointUrl,
+    learningContextId,
   }) => get(
-    urls.videoFeatures({ studioEndpointUrl }),
+    urls.videoFeatures({ studioEndpointUrl, learningContextId }),
   ),
   uploadVideo: ({
     data,
@@ -255,7 +256,7 @@ export const processVideoIds = ({
 };
 
 export const isEdxVideo = (src) => {
-  const uuid4Regex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
+  const uuid4Regex = new RegExp(/^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/);
   if (src && src.match(uuid4Regex)) {
     return true;
   }
@@ -263,7 +264,7 @@ export const isEdxVideo = (src) => {
 };
 
 export const parseYoutubeId = (src) => {
-  const youtubeRegex = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w-]+\?v=|embed\/|v\/)?)([\w-]+)(\S+)?$/;
+  const youtubeRegex = new RegExp(/^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w-]+\?v=|embed\/|v\/)?)([\w-]+)(\S+)?$/);
   if (!src.match(youtubeRegex)) {
     return null;
   }

@@ -15,7 +15,6 @@ export const Editor = ({
   lmsEndpointUrl,
   studioEndpointUrl,
   onClose,
-  returnFunction,
 }) => {
   const dispatch = useDispatch();
   hooks.initializeApp({
@@ -38,7 +37,7 @@ export const Editor = ({
         aria-label={blockType}
       >
         {(EditorComponent !== undefined)
-          ? <EditorComponent {...{ onClose, returnFunction }} />
+          ? <EditorComponent onClose={onClose} />
           : <FormattedMessage {...messages.couldNotFindEditor} />}
       </div>
     </div>
@@ -49,7 +48,6 @@ Editor.defaultProps = {
   learningContextId: null,
   lmsEndpointUrl: null,
   onClose: null,
-  returnFunction: null,
   studioEndpointUrl: null,
 };
 
@@ -59,7 +57,6 @@ Editor.propTypes = {
   learningContextId: PropTypes.string,
   lmsEndpointUrl: PropTypes.string,
   onClose: PropTypes.func,
-  returnFunction: PropTypes.func,
   studioEndpointUrl: PropTypes.string,
 };
 

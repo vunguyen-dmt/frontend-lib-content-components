@@ -36,7 +36,7 @@ export const fetchBlockById = ({ blockId, studioEndpointUrl }) => {
   } else if (blockId === 'problem-block-id') {
     data = {
       data: `<problem>
-    </problem>`,
+        </problem>`,
       display_name: 'Dropdown',
       metadata: {
         markdown: `You can use this template as a guide to the simple editor markdown and OLX markup to use for dropdown problems. Edit this component to replace this template with your own assessment.
@@ -53,11 +53,6 @@ export const fetchBlockById = ({ blockId, studioEndpointUrl }) => {
         submission_wait_seconds: 15,
         weight: 29,
       },
-    };
-  } else if (blockId === 'game-block-id') {
-    data = {
-      display_name: 'Game Block',
-      // TODO: insert mock data from backend here
     };
   }
   return mockPromise({ data: { ...data } });
@@ -143,7 +138,7 @@ export const fetchAdvanceSettings = ({ studioEndpointUrl, learningContextId }) =
   data: { allow_unsupported_xblocks: { value: true } },
 });
 // eslint-disable-next-line
-export const fetchVideoFeatures = ({ studioEndpointUrl }) => mockPromise({
+export const fetchVideoFeatures = ({ studioEndpointUrl, learningContextId }) => mockPromise({
   data: {
     allowThumbnailUpload: true,
     videoSharingEnabledForCourse: true,
