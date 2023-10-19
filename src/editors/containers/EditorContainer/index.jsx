@@ -19,14 +19,13 @@ export const EditorContainer = ({
   getContent,
   onClose,
   validateEntry,
-  returnFunction,
   // injected
   intl,
 }) => {
   const dispatch = useDispatch();
   const isInitialized = hooks.isInitialized();
   const { isCancelConfirmOpen, openCancelConfirmModal, closeCancelConfirmModal } = hooks.cancelConfirmModalToggle();
-  const handleCancel = hooks.handleCancel({ onClose, returnFunction });
+  const handleCancel = hooks.handleCancel({ onClose });
   return (
     <div
       className="position-relative zindex-0"
@@ -36,12 +35,7 @@ export const EditorContainer = ({
         confirmAction={(
           <Button
             variant="primary"
-            onClick={() => {
-              handleCancel();
-              if (returnFunction) {
-                closeCancelConfirmModal();
-              }
-            }}
+            onClick={handleCancel}
           >
             <FormattedMessage {...messages.okButtonLabel} />
           </Button>
@@ -71,12 +65,7 @@ export const EditorContainer = ({
         clearSaveFailed={hooks.clearSaveError({ dispatch })}
         disableSave={!isInitialized}
         onCancel={openCancelConfirmModal}
-        onSave={hooks.handleSaveClicked({
-          dispatch,
-          getContent,
-          validateEntry,
-          returnFunction,
-        })}
+        onSave={hooks.handleSaveClicked({ dispatch, getContent, validateEntry })}
         saveFailed={hooks.saveFailed()}
       />
     </div>
@@ -84,14 +73,12 @@ export const EditorContainer = ({
 };
 EditorContainer.defaultProps = {
   onClose: null,
-  returnFunction: null,
   validateEntry: null,
 };
 EditorContainer.propTypes = {
   children: PropTypes.node.isRequired,
   getContent: PropTypes.func.isRequired,
   onClose: PropTypes.func,
-  returnFunction: PropTypes.func,
   validateEntry: PropTypes.func,
   // injected
   intl: intlShape.isRequired,

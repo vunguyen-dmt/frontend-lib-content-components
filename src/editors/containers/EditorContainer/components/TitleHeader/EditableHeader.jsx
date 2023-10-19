@@ -31,7 +31,6 @@ EditableHeader.defaultProps = {
 EditableHeader.propTypes = {
   inputRef: PropTypes.oneOfType([
     PropTypes.func,
-    // eslint-disable-next-line react/forbid-prop-types
     PropTypes.shape({ current: PropTypes.any }),
   ]),
   handleChange: PropTypes.func.isRequired,

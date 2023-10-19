@@ -6,7 +6,6 @@ exports[`VideoEditor snapshots renders as expected with default behavior 1`] = `
 >
   <EditorContainer
     onClose={[MockFunction props.onClose]}
-    returnFunction={null}
     validateEntry={[MockFunction validateEntry]}
   >
     <div
@@ -35,7 +34,6 @@ exports[`VideoEditor snapshots renders as expected with default behavior 2`] = `
 >
   <EditorContainer
     onClose={[MockFunction props.onClose]}
-    returnFunction={null}
     validateEntry={[MockFunction validateEntry]}
   >
     <div

@@ -9,7 +9,6 @@ const props = {
   getContent: jest.fn().mockName('props.getContent'),
   onClose: jest.fn().mockName('props.onClose'),
   validateEntry: jest.fn().mockName('props.validateEntry'),
-  returnFunction: jest.fn().mockName('props.returnFunction'),
   // inject
   intl: { formatMessage },
 };
@@ -52,7 +51,6 @@ describe('EditorContainer component', () => {
           dispatch: useDispatch(),
           getContent: props.getContent,
           validateEntry: props.validateEntry,
-          returnFunction: props.returnFunction,
         });
         expect(el.children().at(3)
           .props().onSave).toEqual(expected);

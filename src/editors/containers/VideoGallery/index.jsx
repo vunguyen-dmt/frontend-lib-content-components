@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { selectors } from '../../data/redux';
 import hooks from './hooks';
 import SelectionModal from '../../sharedComponents/SelectionModal';
@@ -7,19 +8,15 @@ import { acceptedImgKeys } from './utils';
 import messages from './messages';
 import { RequestKeys } from '../../data/constants/requests';
 
-export const VideoGallery = () => {
-  const rawVideos = useSelector(selectors.app.videos);
-  const isLoaded = useSelector(
-    (state) => selectors.requests.isFinished(state, { requestKey: RequestKeys.fetchVideos }),
-  );
-  const isFetchError = useSelector(
-    (state) => selectors.requests.isFailed(state, { requestKey: RequestKeys.fetchVideos }),
-  );
-  const isUploadError = useSelector(
-    (state) => selectors.requests.isFailed(state, { requestKey: RequestKeys.uploadVideo }),
-  );
+export const VideoGallery = ({
+  // redux
+  rawVideos,
+  isLoaded,
+  isFetchError,
+  isUploadError,
+}) => {
   const videos = hooks.buildVideos({ rawVideos });
-  const handleVideoUpload = hooks.useVideoUploadHandler();
+  const handleVideoUpload = hooks.handleVideoUpload();
 
   useEffect(() => {
     // If no videos exists redirects to the video upload screen
@@ -34,8 +31,8 @@ export const VideoGallery = () => {
     galleryProps,
     searchSortProps,
     selectBtnProps,
-  } = hooks.useVideoProps({ videos });
-  const handleCancel = hooks.useCancelHandler();
+  } = hooks.videoProps({ videos });
+  const handleCancel = hooks.handleCancel();
 
   const modalMessages = {
     confirmMsg: messages.selectVideoButtonlabel,
@@ -46,28 +43,44 @@ export const VideoGallery = () => {
   };
 
   return (
-    <SelectionModal
-      {...{
-        isOpen: true,
-        close: handleCancel,
-        size: 'fullscreen',
-        isFullscreenScroll: false,
-        galleryError,
-        inputError,
-        fileInput,
-        galleryProps,
-        searchSortProps,
-        selectBtnProps,
-        acceptedFiles: acceptedImgKeys,
-        modalMessages,
-        isLoaded,
-        isUploadError,
-        isFetchError,
-      }}
-    />
+    <div>
+      <SelectionModal
+        {...{
+          isOpen: true,
+          close: handleCancel,
+          size: 'fullscreen',
+          isFullscreenScroll: false,
+          galleryError,
+          inputError,
+          fileInput,
+          galleryProps,
+          searchSortProps,
+          selectBtnProps,
+          acceptedFiles: acceptedImgKeys,
+          modalMessages,
+          isLoaded,
+          isUploadError,
+          isFetchError,
+        }}
+      />
+    </div>
   );
 };
 
-VideoGallery.propTypes = {};
+VideoGallery.propTypes = {
+  rawVideos: PropTypes.shape({}).isRequired,
+  isLoaded: PropTypes.bool.isRequired,
+  isFetchError: PropTypes.bool.isRequired,
+  isUploadError: PropTypes.bool.isRequired,
+};
 
-export default VideoGallery;
+export const mapStateToProps = (state) => ({
+  rawVideos: selectors.app.videos(state),
+  isLoaded: selectors.requests.isFinished(state, { requestKey: RequestKeys.fetchVideos }),
+  isFetchError: selectors.requests.isFailed(state, { requestKey: RequestKeys.fetchVideos }),
+  isUploadError: selectors.requests.isFailed(state, { requestKey: RequestKeys.uploadVideo }),
+});
+
+export const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(VideoGallery);

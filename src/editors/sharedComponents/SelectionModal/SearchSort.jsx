@@ -2,17 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  ActionRow, Form, Icon, IconButton, SelectMenu, MenuItem,
+  ActionRow, Dropdown, Form, Icon, IconButton,
 } from '@edx/paragon';
 import { Close, Search } from '@edx/paragon/icons';
 import {
   FormattedMessage,
-  useIntl,
+  injectIntl,
+  intlShape,
 } from '@edx/frontend-platform/i18n';
 
 import messages from './messages';
-import MultiSelectFilterDropdown from './MultiSelectFilterDropdown';
-import { sortKeys, sortMessages } from '../../containers/VideoGallery/utils';
 
 export const SearchSort = ({
   searchString,
@@ -20,25 +19,28 @@ export const SearchSort = ({
   clearSearchString,
   sortBy,
   onSortClick,
+  sortKeys,
+  sortMessages,
   filterBy,
   onFilterClick,
+  filterKeys,
+  filterMessages,
   showSwitch,
   switchMessage,
   onSwitchClick,
-}) => {
-  const intl = useIntl();
-  return (
-    <ActionRow>
-      <Form.Group style={{ margin: 0 }}>
-        <Form.Control
-          autoFocus
-          onChange={onSearchChange}
-          placeholder={intl.formatMessage(messages.searchPlaceholder)}
-          trailingElement={
+  // injected
+  intl,
+}) => (
+  <ActionRow>
+    <Form.Group style={{ margin: 0 }}>
+      <Form.Control
+        autoFocus
+        onChange={onSearchChange}
+        placeholder={intl.formatMessage(messages.searchPlaceholder)}
+        trailingElement={
             searchString
               ? (
                 <IconButton
-                  alt={intl.formatMessage(messages.clearSearch)}
                   iconAs={Icon}
                   invertColors
                   isActive
@@ -49,43 +51,62 @@ export const SearchSort = ({
               )
               : <Icon src={Search} />
           }
-          value={searchString}
-        />
-      </Form.Group>
+        value={searchString}
+      />
+    </Form.Group>
 
-      { !showSwitch && <ActionRow.Spacer /> }
-      <SelectMenu variant="link">
+    { !showSwitch && <ActionRow.Spacer /> }
+    <Dropdown>
+      <Dropdown.Toggle className="text-gray-700" id="gallery-sort-button" variant="tertiary">
+        <FormattedMessage {...sortMessages[sortBy]} />
+      </Dropdown.Toggle>
+      <Dropdown.Menu>
         {Object.keys(sortKeys).map(key => (
-          <MenuItem key={key} onClick={onSortClick(key)} defaultSelected={key === sortBy}>
+          <Dropdown.Item key={key} onClick={onSortClick(key)}>
             <FormattedMessage {...sortMessages[key]} />
-          </MenuItem>
+          </Dropdown.Item>
         ))}
-      </SelectMenu>
+      </Dropdown.Menu>
+    </Dropdown>
 
-      {onFilterClick && <MultiSelectFilterDropdown selected={filterBy} onSelectionChange={onFilterClick} />}
+    { filterKeys && filterMessages && (
+      <Dropdown>
+        <Dropdown.Toggle className="text-gray-700" id="gallery-filter-button" variant="tertiary">
+          <FormattedMessage {...filterMessages[filterBy]} />
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          {Object.keys(filterKeys).map(key => (
+            <Dropdown.Item key={key} onClick={onFilterClick(key)}>
+              <FormattedMessage {...filterMessages[key]} />
+            </Dropdown.Item>
+          ))}
+        </Dropdown.Menu>
+      </Dropdown>
+    )}
 
-      { showSwitch && (
-        <>
-          <ActionRow.Spacer />
-          <Form.SwitchSet
-            name="switch"
-            onChange={onSwitchClick}
-            isInline
-          >
-            <Form.Switch className="text-gray-700" value="switch-value" floatLabelLeft>
-              <FormattedMessage {...switchMessage} />
-            </Form.Switch>
-          </Form.SwitchSet>
-        </>
-      )}
+    { showSwitch && (
+      <>
+        <ActionRow.Spacer />
+        <Form.SwitchSet
+          name="switch"
+          onChange={onSwitchClick}
+          isInline
+        >
+          <Form.Switch className="text-gray-700" value="switch-value" floatLabelLeft>
+            <FormattedMessage {...switchMessage} />
+          </Form.Switch>
+        </Form.SwitchSet>
+      </>
+    )}
 
-    </ActionRow>
-  );
-};
+  </ActionRow>
+);
 
 SearchSort.defaultProps = {
   filterBy: '',
   onFilterClick: null,
+  filterKeys: null,
+  filterMessages: null,
   showSwitch: false,
   onSwitchClick: null,
 };
@@ -96,11 +117,17 @@ SearchSort.propTypes = {
   clearSearchString: PropTypes.func.isRequired,
   sortBy: PropTypes.string.isRequired,
   onSortClick: PropTypes.func.isRequired,
-  filterBy: PropTypes.arrayOf(PropTypes.string),
+  sortKeys: PropTypes.shape({}).isRequired,
+  sortMessages: PropTypes.shape({}).isRequired,
+  filterBy: PropTypes.string,
   onFilterClick: PropTypes.func,
+  filterKeys: PropTypes.shape({}),
+  filterMessages: PropTypes.shape({}),
   showSwitch: PropTypes.bool,
   switchMessage: PropTypes.shape({}).isRequired,
   onSwitchClick: PropTypes.func,
+  // injected
+  intl: intlShape.isRequired,
 };
 
-export default SearchSort;
+export default injectIntl(SearchSort);

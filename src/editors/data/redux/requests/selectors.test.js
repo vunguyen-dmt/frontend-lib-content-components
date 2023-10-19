@@ -1,4 +1,3 @@
-/* eslint-disable no-import-assign */
 import { RequestStates } from '../../constants/requests';
 
 // import * in order to mock in-file references

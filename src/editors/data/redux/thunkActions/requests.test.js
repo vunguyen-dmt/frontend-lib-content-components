@@ -174,7 +174,6 @@ describe('requests thunkActions module', () => {
   };
   describe('network request actions', () => {
     beforeEach(() => {
-      // eslint-disable-next-line no-import-assign
       requests.networkRequest = jest.fn(args => ({ networkRequest: args }));
     });
     describe('fetchBlock', () => {
@@ -487,6 +486,7 @@ describe('requests thunkActions module', () => {
           requestKey: RequestKeys.fetchVideoFeatures,
           promise: api.fetchVideoFeatures({
             studioEndpointUrl: selectors.app.studioEndpointUrl(testState),
+            learningContextId: selectors.app.learningContextId(testState),
           }),
         },
       });

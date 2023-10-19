@@ -3,7 +3,7 @@
 
 import { XMLParser, XMLBuilder } from 'fast-xml-parser';
 import _ from 'lodash-es';
-import { ProblemTypeKeys, RichTextProblems } from '../../../data/constants/problem';
+import { ProblemTypeKeys } from '../../../data/constants/problem';
 
 export const indexToLetterMap = [...Array(26)].map((val, i) => String.fromCharCode(i + 65));
 
@@ -62,11 +62,28 @@ export const stripNonTextTags = ({ input, tag }) => {
 
 export class OLXParser {
   constructor(olxString) {
-    // There are two versions of the parsed XLM because the fields using tinymce require the order
-    // of the parsed data and spacing values to be preserved. However, all the other widgets need
-    // the data grouped by the wrapping tag. Examples of the parsed format can be found here:
-    // https://github.com/NaturalIntelligence/fast-xml-parser/blob/master/docs/v4/2.XMLparseOptions.md
-    const baseParserOptions = {
+    this.problem = {};
+    this.questionData = {};
+    const questionOptions = {
+      ignoreAttributes: false,
+      alwaysCreateTextNode: true,
+      numberParseOptions: {
+        leadingZeros: false,
+        hex: false,
+      },
+      preserveOrder: true,
+      processEntities: false,
+    };
+    const parserOptions = {
+      ignoreAttributes: false,
+      alwaysCreateTextNode: true,
+      numberParseOptions: {
+        leadingZeros: false,
+        hex: false,
+      },
+      processEntities: false,
+    };
+    const builderOptions = {
       ignoreAttributes: false,
       numberParseOptions: {
         leadingZeros: false,
@@ -74,85 +91,18 @@ export class OLXParser {
       },
       processEntities: false,
     };
-
-    // Base Parser
-    this.problem = {};
-    const parserOptions = {
-      ...baseParserOptions,
-      alwaysCreateTextNode: true,
-    };
-    const builderOptions = {
-      ...baseParserOptions,
-    };
+    // There are two versions of the parsed XLM because the question requires the order of the
+    // parsed data to be preserved. However, all the other widgets need the data grouped by
+    // the wrapping tag.
+    const questionParser = new XMLParser(questionOptions);
     const parser = new XMLParser(parserOptions);
     this.builder = new XMLBuilder(builderOptions);
     this.parsedOLX = parser.parse(olxString);
+    this.parsedQuestionOLX = questionParser.parse(olxString);
     if (_.has(this.parsedOLX, 'problem')) {
       this.problem = this.parsedOLX.problem;
+      this.questionData = this.parsedQuestionOLX[0].problem;
     }
-
-    // Parser with `preservedOrder: true` and `trimValues: false`
-    this.richTextProblem = [];
-    const richTextOptions = {
-      ...baseParserOptions,
-      alwaysCreateTextNode: true,
-      preserveOrder: true,
-      trimValues: false,
-    };
-    const richTextBuilderOptions = {
-      ...baseParserOptions,
-      preserveOrder: true,
-      trimValues: false,
-    };
-    const richTextParser = new XMLParser(richTextOptions);
-    this.richTextBuilder = new XMLBuilder(richTextBuilderOptions);
-    this.richTextOLX = richTextParser.parse(olxString);
-    if (_.has(this.parsedOLX, 'problem')) {
-      this.richTextProblem = this.richTextOLX[0].problem;
-    }
-  }
-
-  /** getPreservedAnswersAndFeedback(problemType, widgetName, option)
-   * getPreservedAnswersAndFeedback takes a problemType, widgetName, and a valid option. The
-   * olx for the given problem type and widget is parsed. Do to the structure of xml that is
-   * parsed with the prsereved attribute, the function has to loop through arrays of objects.
-   * The first for-loop checks for feedback tags and answer choices and appended to the
-   * preservedAnswers. The nested for loop checks for feedback and answer values inside the
-   * option (answer) tags.
-   * @param {string} problemType - string of the olx problem type
-   * @param {string} widgetName - string of the wrapping tag name
-   *                              (optioninput, choicegroup, checkboxgroup, additional_answer)
-   * @param {string} option - string of the type of answers (choice, option, correcthint, stringequalhint)
-   * @return {array} array containing answer objects and possibly an array of grouped feedback
-   */
-  getPreservedAnswersAndFeedback(problemType, widgetName, option) {
-    const [problemBody] = this.richTextProblem.filter(section => Object.keys(section).includes(problemType));
-    const isChoiceProblem = !([ProblemTypeKeys.NUMERIC, ProblemTypeKeys.TEXTINPUT].includes(problemType));
-    const preservedAnswers = [];
-    let correctAnswerFeedbackTag = option;
-    let incorrectAnswerFeedbackTag;
-    if (problemType === ProblemTypeKeys.TEXTINPUT) {
-      [correctAnswerFeedbackTag, incorrectAnswerFeedbackTag] = option;
-    }
-    const problemBodyArr = problemBody[problemType];
-    problemBodyArr.forEach(subtag => {
-      const tagNames = Object.keys(subtag);
-      if (!isChoiceProblem && tagNames.includes(correctAnswerFeedbackTag)) {
-        preservedAnswers.unshift(subtag[correctAnswerFeedbackTag]);
-      }
-      if (problemType === ProblemTypeKeys.TEXTINPUT && tagNames.includes(incorrectAnswerFeedbackTag)) {
-        preservedAnswers.push(subtag);
-      }
-      if (tagNames.includes(widgetName)) {
-        const currentAnswerArr = subtag[widgetName];
-        currentAnswerArr.forEach(answer => {
-          if (Object.keys(answer).includes(correctAnswerFeedbackTag)) {
-            preservedAnswers.push(answer[correctAnswerFeedbackTag]);
-          }
-        });
-      }
-    });
-    return preservedAnswers;
   }
 
   /** parseMultipleChoiceAnswers(problemType, widgetName, option)
@@ -169,11 +119,6 @@ export class OLXParser {
    * @return {object} object containing an array of answer objects and possibly an array of grouped feedback
    */
   parseMultipleChoiceAnswers(problemType, widgetName, option) {
-    const preservedAnswers = this.getPreservedAnswersAndFeedback(
-      problemType,
-      widgetName,
-      option,
-    );
     const answers = [];
     let data = {};
     const widget = _.get(this.problem, `${problemType}.${widgetName}`);
@@ -182,7 +127,7 @@ export class OLXParser {
       throw new Error('Misc Tags, reverting to Advanced Editor');
     }
     const choice = _.get(widget, option);
-    const isComplexAnswer = RichTextProblems.includes(problemType);
+    const isComplexAnswer = [ProblemTypeKeys.SINGLESELECT, ProblemTypeKeys.MULTISELECT].includes(problemType);
     if (_.isEmpty(choice)) {
       answers.push(
         {
@@ -193,16 +138,14 @@ export class OLXParser {
       );
     } else if (_.isArray(choice)) {
       choice.forEach((element, index) => {
-        const preservedAnswer = preservedAnswers[index].filter(answer => !Object.keys(answer).includes(`${option}hint`));
-        const preservedFeedback = preservedAnswers[index].filter(answer => Object.keys(answer).includes(`${option}hint`));
         let title = element['#text'];
-
-        if (isComplexAnswer && preservedAnswer) {
-          title = this.richTextBuilder.build(preservedAnswer);
+        if (isComplexAnswer) {
+          const answerTitle = stripNonTextTags({ input: element, tag: `${option}hint` });
+          title = this.builder.build(answerTitle);
         }
         const correct = eval(element['@_correct'].toLowerCase());
         const id = indexToLetterMap[index];
-        const feedback = this.getAnswerFeedback(preservedFeedback, `${option}hint`);
+        const feedback = this.getAnswerFeedback(element, `${option}hint`);
         answers.push(
           {
             id,
@@ -213,14 +156,12 @@ export class OLXParser {
         );
       });
     } else {
-      const preservedAnswer = preservedAnswers[0].filter(answer => !Object.keys(answer).includes(`${option}hint`));
-      const preservedFeedback = preservedAnswers[0].filter(answer => Object.keys(answer).includes(`${option}hint`));
       let title = choice['#text'];
-
-      if (isComplexAnswer && preservedAnswer) {
-        title = this.richTextBuilder.build(preservedAnswer);
+      if (isComplexAnswer) {
+        const answerTitle = stripNonTextTags({ input: choice, tag: `${option}hint` });
+        title = this.builder.build(answerTitle);
       }
-      const feedback = this.getAnswerFeedback(preservedFeedback, `${option}hint`);
+      const feedback = this.getAnswerFeedback(choice, `${option}hint`);
       answers.push({
         correct: eval(choice['@_correct'].toLowerCase()),
         id: indexToLetterMap[answers.length],
@@ -239,28 +180,38 @@ export class OLXParser {
     return data;
   }
 
-  /** getAnswerFeedback(preservedFeedback, hintKey)
-   * getAnswerFeedback takes preservedFeedback and a valid option. The preservedFeedback object
-   * is checked for selected and unselected feedback. The respective values are added to the
-   * feedback object. The feedback object is returned.
-   * @param {array} preservedFeedback - array of feedback objects
+  /** getAnswerFeedback(choice, hintKey)
+   * getAnswerFeedback takes a choice and a valid option. The choice object is checked for
+   * selected and unselected feedback. The respective values are added to the feedback object.
+   * The feedback object is returned.
+   * @param {object} choice - object of an answer choice
    * @param {string} hintKey - string of the wrapping tag name (optionhint or choicehint)
    * @return {object} object containing selected and unselected feedback
    */
-  getAnswerFeedback(preservedFeedback, hintKey) {
-    const feedback = {};
+  getAnswerFeedback(choice, hintKey) {
+    let feedback = {};
     let feedbackKeys = 'selectedFeedback';
-    if (_.isEmpty(preservedFeedback)) { return feedback; }
-
-    preservedFeedback.forEach((feedbackArr) => {
-      if (_.has(feedbackArr, hintKey)) {
-        if (_.has(feedbackArr, ':@') && _.has(feedbackArr[':@'], '@_selected')) {
-          const isSelectedFeedback = feedbackArr[':@']['@_selected'] === 'true';
-          feedbackKeys = isSelectedFeedback ? 'selectedFeedback' : 'unselectedFeedback';
+    if (_.has(choice, hintKey)) {
+      const answerFeedback = choice[hintKey];
+      if (_.isArray(answerFeedback)) {
+        answerFeedback.forEach((element) => {
+          if (_.has(element, '@_selected')) {
+            feedbackKeys = eval(element['@_selected'].toLowerCase()) ? 'selectedFeedback' : 'unselectedFeedback';
+          }
+          feedback = {
+            ...feedback,
+            [feedbackKeys]: this.builder.build(element),
+          };
+        });
+      } else {
+        if (_.has(answerFeedback, '@_selected')) {
+          feedbackKeys = eval(answerFeedback['@_selected'].toLowerCase()) ? 'selectedFeedback' : 'unselectedFeedback';
         }
-        feedback[feedbackKeys] = this.richTextBuilder.build(feedbackArr[hintKey]);
+        feedback = {
+          [feedbackKeys]: this.builder.build(answerFeedback),
+        };
       }
-    });
+    }
     return feedback;
   }
 
@@ -305,32 +256,24 @@ export class OLXParser {
    * @return {object} object containing an array of answer objects and object of additionalStringAttributes
    */
   parseStringResponse() {
-    const [firstCorrectFeedback, ...preservedFeedback] = this.getPreservedAnswersAndFeedback(
-      ProblemTypeKeys.TEXTINPUT,
-      'additional_answer',
-      ['correcthint', 'stringequalhint'],
-    );
     const { stringresponse } = this.problem;
     const answers = [];
     let answerFeedback = '';
     let additionalStringAttributes = {};
     let data = {};
-    const firstFeedback = this.getFeedback(firstCorrectFeedback);
+    const feedback = this.getFeedback(stringresponse);
     answers.push({
       id: indexToLetterMap[answers.length],
       title: stringresponse['@_answer'],
       correct: true,
-      selectedFeedback: firstFeedback,
+      selectedFeedback: feedback,
     });
-
-    const additionalAnswerFeedback = preservedFeedback.filter(feedback => _.isArray(feedback));
-    const stringEqualHintFeedback = preservedFeedback.filter(feedback => !_.isArray(feedback));
 
     // Parsing additional_answer for string response.
     const additionalAnswer = _.get(stringresponse, 'additional_answer', []);
     if (_.isArray(additionalAnswer)) {
-      additionalAnswer.forEach((newAnswer, indx) => {
-        answerFeedback = this.getFeedback(additionalAnswerFeedback[indx]);
+      additionalAnswer.forEach((newAnswer) => {
+        answerFeedback = this.getFeedback(newAnswer);
         answers.push({
           id: indexToLetterMap[answers.length],
           title: newAnswer['@_answer'],
@@ -339,7 +282,7 @@ export class OLXParser {
         });
       });
     } else {
-      answerFeedback = this.getFeedback(additionalAnswerFeedback[0]);
+      answerFeedback = this.getFeedback(additionalAnswer);
       answers.push({
         id: indexToLetterMap[answers.length],
         title: additionalAnswer['@_answer'],
@@ -351,8 +294,9 @@ export class OLXParser {
     // Parsing stringequalhint for string response.
     const stringEqualHint = _.get(stringresponse, 'stringequalhint', []);
     if (_.isArray(stringEqualHint)) {
-      stringEqualHint.forEach((newAnswer, indx) => {
-        answerFeedback = this.richTextBuilder.build(stringEqualHintFeedback[indx].stringequalhint);
+      stringEqualHint.forEach((newAnswer) => {
+        const parsedFeedback = stripNonTextTags({ input: newAnswer, tag: '@_answer' });
+        answerFeedback = this.builder.build(parsedFeedback);
         answers.push({
           id: indexToLetterMap[answers.length],
           title: newAnswer['@_answer'],
@@ -361,7 +305,8 @@ export class OLXParser {
         });
       });
     } else {
-      answerFeedback = this.richTextBuilder.build(stringEqualHintFeedback[0].stringequalhint);
+      const parsedFeedback = stripNonTextTags({ input: stringEqualHint, tag: '@_answer' });
+      answerFeedback = this.builder.build(parsedFeedback);
       answers.push({
         id: indexToLetterMap[answers.length],
         title: stringEqualHint['@_answer'],
@@ -395,16 +340,11 @@ export class OLXParser {
    * @return {object} object containing an array of answer objects
    */
   parseNumericResponse() {
-    const [firstCorrectFeedback, ...preservedFeedback] = this.getPreservedAnswersAndFeedback(
-      ProblemTypeKeys.NUMERIC,
-      'additional_answer',
-      'correcthint',
-    );
     const { numericalresponse } = this.problem;
     let answerFeedback = '';
     const answers = [];
     let responseParam = {};
-    const feedback = this.getFeedback(firstCorrectFeedback);
+    const feedback = this.getFeedback(numericalresponse);
     if (_.has(numericalresponse, 'responseparam')) {
       const type = _.get(numericalresponse, 'responseparam.@_type');
       const defaultValue = _.get(numericalresponse, 'responseparam.@_default');
@@ -425,8 +365,8 @@ export class OLXParser {
     // Parsing additional_answer for numerical response.
     const additionalAnswer = _.get(numericalresponse, 'additional_answer', []);
     if (_.isArray(additionalAnswer)) {
-      additionalAnswer.forEach((newAnswer, indx) => {
-        answerFeedback = this.getFeedback(preservedFeedback[indx]);
+      additionalAnswer.forEach((newAnswer) => {
+        answerFeedback = this.getFeedback(newAnswer);
         answers.push({
           id: indexToLetterMap[answers.length],
           title: newAnswer['@_answer'],
@@ -435,7 +375,7 @@ export class OLXParser {
         });
       });
     } else {
-      answerFeedback = this.getFeedback(preservedFeedback[0]);
+      answerFeedback = this.getFeedback(additionalAnswer);
       answers.push({
         id: indexToLetterMap[answers.length],
         title: additionalAnswer['@_answer'],
@@ -457,7 +397,17 @@ export class OLXParser {
    * @return {string} string of OLX
    */
   parseQuestions(problemType) {
-    const problemArray = _.get(this.richTextProblem[0], problemType) || this.richTextProblem;
+    const options = {
+      ignoreAttributes: false,
+      numberParseOptions: {
+        leadingZeros: false,
+        hex: false,
+      },
+      preserveOrder: true,
+      processEntities: false,
+    };
+    const builder = new XMLBuilder(options);
+    const problemArray = _.get(this.questionData[0], problemType) || this.questionData;
 
     const questionArray = [];
     problemArray.forEach(tag => {
@@ -468,19 +418,18 @@ export class OLXParser {
         }
         questionArray.push(tag);
       } else if (responseKeys.includes(tagName)) {
-        /* Tags that are not used for other parts of the question such as <solution> or <choicegroup>
-         should be included in the question. These include but are not limited to tags like <label>,
-         <description> and <table> as they often are both valid olx as siblings or children of response
-         type tags. */
+        /* <label> and <description> tags often are both valid olx as siblings or children of response type tags.
+         They, however, do belong in the question, so we append them to the question.
+        */
         tag[tagName].forEach(subTag => {
           const subTagName = Object.keys(subTag)[0];
-          if (!nonQuestionKeys.includes(subTagName)) {
+          if (subTagName === 'label' || subTagName === 'description') {
             questionArray.push(subTag);
           }
         });
       }
     });
-    const questionString = this.richTextBuilder.build(questionArray);
+    const questionString = builder.build(questionArray);
     return questionString.replace(/<description>/gm, '<em>').replace(/<\/description>/gm, '</em>');
   }
 
@@ -493,28 +442,28 @@ export class OLXParser {
   getHints() {
     const hintsObject = [];
     if (_.has(this.problem, 'demandhint.hint')) {
-      const preservedProblem = this.richTextProblem;
-      preservedProblem.forEach(obj => {
-        const objKeys = Object.keys(obj);
-        if (objKeys.includes('demandhint')) {
-          const currentDemandHint = obj.demandhint;
-          currentDemandHint.forEach(hint => {
-            if (Object.keys(hint).includes('hint')) {
-              const hintValue = this.richTextBuilder.build(hint.hint);
-              hintsObject.push({
-                id: hintsObject.length,
-                value: hintValue,
-              });
-            }
+      const hint = _.get(this.problem, 'demandhint.hint');
+      if (_.isArray(hint)) {
+        hint.forEach(element => {
+          const hintValue = this.builder.build(element);
+          hintsObject.push({
+            id: hintsObject.length,
+            value: hintValue,
           });
-        }
-      });
+        });
+      } else {
+        const hintValue = this.builder.build(hint);
+        hintsObject.push({
+          id: hintsObject.length,
+          value: hintValue,
+        });
+      }
     }
     return hintsObject;
   }
 
-  /** getSolutionExplanation(problemType)
-   * getSolutionExplanation takes a problemType. The problem type is used to determine where the
+  /** parseQuestions(problemType)
+   * parseQuestions takes a problemType. The problem type is used to determine where the
    * text for the solution lies (sibling or child to warpping problem type tags).
    * Using the XMLBuilder, the solution is built removing the redundant "explanation" that is
    * appended for Studio styling purposes. The string version of the OLX is return.
@@ -523,26 +472,31 @@ export class OLXParser {
    */
   getSolutionExplanation(problemType) {
     if (!_.has(this.problem, `${problemType}.solution`) && !_.has(this.problem, 'solution')) { return null; }
-    const [problemBody] = this.richTextProblem.filter(section => Object.keys(section).includes(problemType));
-    const [solutionBody] = problemBody[problemType].filter(section => Object.keys(section).includes('solution'));
-    const [divBody] = solutionBody.solution.filter(section => Object.keys(section).includes('div'));
-    const solutionArray = [];
-    if (divBody && divBody.div) {
-      divBody.div.forEach(tag => {
-        const tagText = _.get(Object.values(tag)[0][0], '#text', '');
-        if (tagText.toString().trim() !== 'Explanation') {
-          solutionArray.push(tag);
+    let solution = _.get(this.problem, `${problemType}.solution`, null) || _.get(this.problem, 'solution', null);
+    const wrapper = Object.keys(solution)[0];
+    if (Object.keys(solution).length === 1 && wrapper === 'div') {
+      const parsedSolution = {};
+      Object.entries(solution.div).forEach(([key, value]) => {
+        if (key.indexOf('@_' === -1)) {
+          // The redundant "explanation" title should be removed.
+          // If the key is a paragraph or h2, and the text of either the first or only item is "Explanation."
+          if (
+            (key === 'p' || key === 'h2')
+            && (_.get(value, '#text', null) === 'Explanation'
+            || (_.isArray(value) && _.get(value[0], '#text', null) === 'Explanation'))
+          ) {
+            if (_.isArray(value)) {
+              value.shift();
+              parsedSolution[key] = value;
+            }
+          } else {
+            parsedSolution[key] = value;
+          }
         }
       });
-    } else {
-      solutionBody.solution.forEach(tag => {
-        const tagText = _.get(Object.values(tag)[0][0], '#text', '');
-        if (tagText.toString().trim() !== 'Explanation') {
-          solutionArray.push(tag);
-        }
-      });
+      solution = parsedSolution;
     }
-    const solutionString = this.richTextBuilder.build(solutionArray);
+    const solutionString = this.builder.build(solution);
     return solutionString;
   }
 
@@ -554,8 +508,9 @@ export class OLXParser {
    * @return {string} string of feedback
    */
   getFeedback(xmlElement) {
-    if (_.isEmpty(xmlElement)) { return ''; }
-    const feedbackString = this.richTextBuilder.build(xmlElement);
+    if (!_.has(xmlElement, 'correcthint')) { return ''; }
+    const feedback = _.get(xmlElement, 'correcthint');
+    const feedbackString = this.builder.build(feedback);
     return feedbackString;
   }
 

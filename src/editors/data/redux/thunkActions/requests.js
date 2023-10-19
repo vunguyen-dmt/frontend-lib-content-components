@@ -290,6 +290,7 @@ export const fetchVideoFeatures = ({ ...rest }) => (dispatch, getState) => {
     requestKey: RequestKeys.fetchVideoFeatures,
     promise: api.fetchVideoFeatures({
       studioEndpointUrl: selectors.app.studioEndpointUrl(getState()),
+      learningContextId: selectors.app.learningContextId(getState()),
     }),
     ...rest,
   }));

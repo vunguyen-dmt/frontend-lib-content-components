@@ -17,7 +17,7 @@ export const ExpandableTextArea = ({
     <>
       <div className="expandable-mce error">
         <TinyMceWidget
-          editorContentHtml={value}
+          textValue={value}
           editorRef={editorRef}
           editorType="expandable"
           setEditorRef={setEditorRef}

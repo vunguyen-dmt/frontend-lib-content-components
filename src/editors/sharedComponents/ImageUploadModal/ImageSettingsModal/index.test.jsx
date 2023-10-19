@@ -10,7 +10,7 @@ jest.mock('./DimensionControls', () => 'DimensionControls');
 jest.mock('./hooks', () => ({
   altText: () => ({
     error: {
-      show: true,
+      show: 'sHoW',
       dismiss: jest.fn(),
     },
     isDecorative: false,
