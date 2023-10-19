@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash-es';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl, intlShape } from '@edx/frontend-platform/i18n';
@@ -17,6 +18,7 @@ export const ScoringCard = ({
   // redux
   studioEndpointUrl,
   learningContextId,
+  isLibrary,
 }) => {
   const {
     handleUnlimitedChange,
@@ -31,7 +33,7 @@ export const ScoringCard = ({
     summary += ` ${String.fromCharCode(183)} `;
     summary += unlimited
       ? intl.formatMessage(messages.unlimitedAttemptsSummary)
-      : intl.formatMessage(messages.attemptsSummary, { attempts });
+      : intl.formatMessage(messages.attemptsSummary, { attempts: attempts || defaultValue });
     return summary;
   };
 
@@ -70,15 +72,18 @@ export const ScoringCard = ({
           className="mt-3 decoration-control-label"
           checked={scoring.attempts.unlimited}
           onChange={handleUnlimitedChange}
+          disabled={!_.isNil(defaultValue)}
         >
           <div className="x-small">
             <FormattedMessage {...messages.unlimitedAttemptsCheckboxLabel} />
           </div>
         </Form.Checkbox>
       </Form.Group>
-      <Hyperlink destination={`${studioEndpointUrl}/settings/advanced/${learningContextId}#max_attempts`} target="_blank">
-        <FormattedMessage {...messages.advancedSettingsLinkText} />
-      </Hyperlink>
+      {!isLibrary && (
+        <Hyperlink destination={`${studioEndpointUrl}/settings/advanced/${learningContextId}#max_attempts`} target="_blank">
+          <FormattedMessage {...messages.advancedSettingsLinkText} />
+        </Hyperlink>
+      )}
     </SettingsOption>
   );
 };
@@ -88,15 +93,22 @@ ScoringCard.propTypes = {
   // eslint-disable-next-line
   scoring: PropTypes.any.isRequired,
   updateSettings: PropTypes.func.isRequired,
-  defaultValue: PropTypes.number.isRequired,
+  defaultValue: PropTypes.number,
   // redux
   studioEndpointUrl: PropTypes.string.isRequired,
-  learningContextId: PropTypes.string.isRequired,
+  learningContextId: PropTypes.string,
+  isLibrary: PropTypes.bool.isRequired,
+};
+
+ScoringCard.defaultProps = {
+  learningContextId: null,
+  defaultValue: null,
 };
 
 export const mapStateToProps = (state) => ({
   studioEndpointUrl: selectors.app.studioEndpointUrl(state),
   learningContextId: selectors.app.learningContextId(state),
+  isLibrary: selectors.app.isLibrary(state),
 });
 
 export const mapDispatchToProps = {};

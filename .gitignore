@@ -112,3 +112,7 @@ module.config.js
 
 ### Code editors ###
 .vscode
+
+### translation temps
+src/i18n/transifex_input.json
+temp/
