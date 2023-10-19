@@ -19,6 +19,7 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
   return (
     StrictDict({
       external_plugins: { tiny_mce_wiris: 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js' },
+      draggable_modal: true,
       plugins: [
         plugins.link,
         plugins.lists,
@@ -53,8 +54,8 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
           buttons.outdent,
           buttons.indent,
         ],
-        [buttons.image, buttons.link, buttons.unlink, buttons.blockQuote, buttons.wirisMathType, buttons.wirisChemType, buttons.codeBlock],
-        [buttons.table, buttons.emoticons, buttons.charmap, buttons.hr],
+        [buttons.image, buttons.link, buttons.unlink, buttons.blockQuote, buttons.codeBlock],
+        [buttons.table, buttons.emoticons, buttons.charmap, buttons.wirisMathType, buttons.wirisChemType, buttons.hr],
         [buttons.removeFormat, codeButton],
       ]) : false,
       // imageToolbar: mapToolbars([
@@ -103,6 +104,8 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
         inline,
         block_formats: 'Header 1=h1;Header 2=h2;Header 3=h3;Header 4=h4;Header 5=h5;Header 6=h6;Div=div;Paragraph=p;Preformatted=pre',
         forced_root_block: defaultFormat,
+        external_plugins: { tiny_mce_wiris: 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js' },
+        draggable_modal: true,
       },
     })
   );
