@@ -18,6 +18,7 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
 
   return (
     StrictDict({
+      external_plugins: { tiny_mce_wiris: 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js' },
       plugins: [
         plugins.link,
         plugins.lists,
@@ -52,7 +53,7 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
           buttons.outdent,
           buttons.indent,
         ],
-        [buttons.image, buttons.link, buttons.unlink, buttons.blockQuote, buttons.codeBlock],
+        [buttons.image, buttons.link, buttons.unlink, buttons.blockQuote, buttons.wirisMathType, buttons.wirisChemType, buttons.codeBlock],
         [buttons.table, buttons.emoticons, buttons.charmap, buttons.hr],
         [buttons.removeFormat, codeButton],
       ]) : false,
@@ -73,7 +74,7 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
           buttons.numlist,
         ],
         [buttons.image, buttons.blockQuote, buttons.codeBlock],
-        [buttons.table, buttons.emoticons, buttons.charmap, buttons.removeFormat],
+        [buttons.table, buttons.emoticons, buttons.charmap, buttons.wirisMathType, buttons.wirisChemType, buttons.removeFormat],
       ]),
       quickbarsSelectionToolbar: toolbar ? false : mapToolbars([
         [buttons.undo, buttons.redo],
@@ -87,7 +88,7 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
           buttons.numlist,
         ],
         [buttons.image, buttons.blockQuote, buttons.codeBlock],
-        [buttons.table, buttons.emoticons, buttons.charmap, buttons.removeFormat],
+        [buttons.table, buttons.emoticons, buttons.charmap, buttons.wirisMathType, buttons.wirisChemType, buttons.removeFormat],
       ]),
       config: {
         branding: false,

@@ -54,6 +54,8 @@ export const buttons = StrictDict({
   fontselect: 'fontselect',
   fontsizeselect: 'fontsizeselect',
   image: 'image',
+  wirisMathType: 'tiny_mce_wiris_formulaEditor',
+  wirisChemType: 'tiny_mce_wiris_formulaEditorChemistry'
 });
 
 export const plugins = listKeyStore([
