@@ -36,6 +36,8 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
       toolbar: toolbar ? mapToolbars([
         [buttons.undo, buttons.redo],
         [buttons.formatSelect],
+        [buttons.fontselect],
+        [buttons.fontsizeselect],
         [labelButton],
         [buttons.bold, buttons.italic, buttons.underline, buttons.foreColor, buttons.backColor],
         [
@@ -51,17 +53,19 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
           buttons.indent,
         ],
         [imageUploadButton, buttons.link, buttons.unlink, buttons.blockQuote, buttons.codeBlock],
-        [buttons.table, buttons.emoticons, buttons.charmap, buttons.hr],
+        [buttons.table, buttons.emoticons, buttons.charmap, buttons.wirisMathType, buttons.wirisChemType, buttons.hr],
         [buttons.removeFormat, codeButton],
       ]) : false,
-      imageToolbar: mapToolbars([
-        // [buttons.rotate.left, buttons.rotate.right],
-        // [buttons.flip.horiz, buttons.flip.vert],
-        [editImageSettings],
-      ]),
+      // imageToolbar: mapToolbars([
+      //   // [buttons.rotate.left, buttons.rotate.right],
+      //   // [buttons.flip.horiz, buttons.flip.vert],
+      //   [editImageSettings],
+      // ]),
       quickbarsInsertToolbar: toolbar ? false : mapToolbars([
         [buttons.undo, buttons.redo],
         [buttons.formatSelect],
+        [buttons.fontselect],
+        [buttons.fontsizeselect],
         [buttons.bold, buttons.italic, buttons.underline, buttons.foreColor],
         [
           buttons.align.justify,
@@ -69,11 +73,13 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
           buttons.numlist,
         ],
         [imageUploadButton, buttons.blockQuote, buttons.codeBlock],
-        [buttons.table, buttons.emoticons, buttons.charmap, buttons.removeFormat],
+        [buttons.table, buttons.emoticons, buttons.charmap, buttons.wirisMathType, buttons.wirisChemType, buttons.removeFormat],
       ]),
       quickbarsSelectionToolbar: toolbar ? false : mapToolbars([
         [buttons.undo, buttons.redo],
         [buttons.formatSelect],
+        [buttons.fontselect],
+        [buttons.fontsizeselect],
         [buttons.bold, buttons.italic, buttons.underline, buttons.foreColor],
         [
           buttons.align.justify,
@@ -81,7 +87,7 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
           buttons.numlist,
         ],
         [imageUploadButton, buttons.blockQuote, buttons.codeBlock],
-        [buttons.table, buttons.emoticons, buttons.charmap, buttons.removeFormat],
+        [buttons.table, buttons.emoticons, buttons.charmap, buttons.wirisMathType, buttons.wirisChemType, buttons.removeFormat],
       ]),
       config: {
         branding: false,
@@ -96,6 +102,8 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
         inline,
         block_formats: 'Header 1=h1;Header 2=h2;Header 3=h3;Header 4=h4;Header 5=h5;Header 6=h6;Div=div;Paragraph=p;Preformatted=pre',
         forced_root_block: defaultFormat,
+        external_plugins: { tiny_mce_wiris: 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js' },
+        draggable_modal: true,
       },
     })
   );
