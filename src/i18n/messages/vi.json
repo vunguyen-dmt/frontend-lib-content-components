@@ -80,12 +80,12 @@
     "authoring.problemeditor.settings.scoring.weight.hint": "Nếu giá trị không được đặt, câu hỏi có giá trị một điểm",
     "authoring.problemeditor.settings.showAnswer.title": "Hiển thị câu trả lời",
     "authoring.problemeditor.settings.showAnswer.attempts.inputLabel": "Số lần thử",
-    "authoring.problemeditor.settings.showAnswer.text": "Xác định thời điểm người học có thể nhìn thấy câu trả lời đúng",
+    "authoring.problemeditor.settings.showAnswer.text": "Xác định thời điểm người học có thể thấy được câu trả lời đúng",
     "authoring.problemeditor.settings.timer.title": "Thời gian giữa các lần thử",
     "authoring.problemeditor.settings.timer.summary": "{time} giây",
     "authoring.problemeditor.settings.timer.text": "Số giây mà người học phải đợi giữa các lần nộp bài đối với một câu hỏi có thể trả lời nhiều lần.",
     "authoring.problemeditor.settings.timer.inputLabel": "Giây",
-    "authoring.problemeditor.settings.type.title": "Loại",
+    "authoring.problemeditor.settings.type.title": "Loại câu hỏi",
     "authoring.problemeditor.settings.switchtoadvancededitor.label": "Chuyển sang trình biên tập nâng cao",
     "authoring.problemeditor.settings.switchtoadvancededitor.ConfirmSwitchMessage": "Nếu bạn sử dụng trình biên tập nâng cao, câu hỏi này sẽ được chuyển đổi sang OLX và bạn sẽ không thể quay lại trình biên tập đơn giản.",
     "authoring.problemeditor.settings.switchtoadvancededitor.ConfirmSwitchMessageTitle": "Chuyển đổi sang OLX?",
@@ -115,7 +115,7 @@
     "authoring.problemEditor.advanceProblem.menu.title": "Câu hỏi nâng cao",
     "authoring.problemEditor.advanceProblem.problemType.label": "{problemType}",
     "authoring.problemEditor.advanceProblem.supportStatus": "{supportStatus}",
-    "authoring.problemEditor.advanceProblem.supportStatus.tooltipMessage": "{supportStatus, select, Tạm thời {Các công cụ được hỗ trợ tạm thời có thể thiếu chức năng mạnh mẽ mà khóa học của bạn yêu cầu. chúng tôi không có quyền kiểm soát chất lượng của phần mềm hoặc nội dung có thể được cung cấp bằng các công cụ này.\n \nHãy kiểm tra kỹ các công cụ này trước khi sử dụng chúng trong khóa học của bạn, đặc biệt là trong các phần được chấm điểm. Tài liệu hoàn chỉnh có thể không có sẵn cho các công cụ được hỗ trợ tạm thời hoặc tài liệu có thể có sẵn từ các nguồn khác ngoài LMS.} Không được hỗ trợ {Các công cụ không có hỗ trợ không được chúng tôi duy trì và có thể không được dùng nữa trong tương lai. Chúng không được khuyến khích sử dụng trong các khóa học do không tuân thủ một hoặc nhiều yêu cầu cơ bản, chẳng hạn như kiểm tra, khả năng truy cập, quốc tế hóa và tài liệu.} other { }}",
+    "authoring.problemEditor.advanceProblem.supportStatus.tooltipMessage": "{supportStatus,  select, Provisional_(Hỗ_trợ_tạm_thời) {Các công cụ được hỗ trợ tạm thời có thể thiếu chức năng mạnh mẽ mà khóa học của bạn yêu cầu. chúng tôi không có quyền kiểm soát chất lượng của phần mềm hoặc nội dung có thể được cung cấp bằng các công cụ này.\n \nHãy kiểm tra kỹ các công cụ này trước khi sử dụng chúng trong khóa học của bạn, đặc biệt là trong các phần được chấm điểm. Tài liệu hoàn chỉnh có thể không có sẵn cho các công cụ được hỗ trợ tạm thời hoặc tài liệu có thể có sẵn từ các nguồn khác ngoài LMS.} Not_supported_(Không_hỗ_trợ) {Các công cụ không có hỗ trợ không được chúng tôi duy trì và có thể không được dùng nữa trong tương lai. Chúng không được khuyến khích sử dụng trong các khóa học do không tuân thủ một hoặc nhiều yêu cầu cơ bản, chẳng hạn như kiểm tra, khả năng truy cập, quốc tế hóa và tài liệu.} other { }}",
     "authoring.problemEditor.preview.altText": "Hình minh họa xem trước của một vấn đề {problemType, select, multiplechoiceresponse {single select} stringreponse {text input} numberresponse {numerical input} optionresponse {dropdown} Choiceresponse {multiple select} other {null}}",
     "authoring.problemEditor.preview.title": "Câu hỏi {previewTitle}",
     "authoring.problemEditor.preview.description": "{previewDescription}",
@@ -306,7 +306,5 @@
     "authoring.problemeditor.settings.RandomizationTypes.never": "Không bao giờ",
     "authoring.problemeditor.settings.RandomizationTypes.onreset": "Khi đặt lại",
     "authoring.problemeditor.settings.RandomizationTypes.perstudent": "Mỗi người học",
-    "authoring.problemeditor.problemTypes.showAnswer.default": "Mặc định"
-
-
+    "authoring.problemeditor.settings.showAnswer.default": "Mặc định"
 }
