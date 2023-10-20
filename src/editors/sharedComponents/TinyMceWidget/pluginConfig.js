@@ -31,11 +31,10 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
         image,
         imageTools,
         quickToolbar,
-        plugins.formatpainter
       ].join(' '),
       menubar: false,
       toolbar: toolbar ? mapToolbars([
-        [buttons.undo, buttons.redo, buttons.formatpainter],
+        [buttons.undo, buttons.redo],
         [buttons.formatSelect],
         [buttons.fontselect],
         [buttons.fontsizeselect],
