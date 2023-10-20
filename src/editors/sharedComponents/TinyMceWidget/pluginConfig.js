@@ -31,15 +31,16 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
         image,
         imageTools,
         quickToolbar,
+        plugins.formatpainter
       ].join(' '),
       menubar: false,
       toolbar: toolbar ? mapToolbars([
-        [buttons.undo, buttons.redo],
+        [buttons.undo, buttons.redo, buttons.formatpainter],
         [buttons.formatSelect],
         [buttons.fontselect],
         [buttons.fontsizeselect],
         [labelButton],
-        [buttons.bold, buttons.italic, buttons.underline, buttons.foreColor, buttons.backColor],
+        [buttons.bold, buttons.italic, buttons.underline, buttons.strikethrough, buttons.foreColor, buttons.backColor],
         [
           buttons.align.left,
           buttons.align.center,
@@ -56,6 +57,7 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
         [buttons.table, buttons.emoticons, buttons.charmap, buttons.wirisMathType, buttons.wirisChemType, buttons.hr],
         [buttons.removeFormat, codeButton],
       ]) : false,
+      imageToolbar: false,
       // imageToolbar: mapToolbars([
       //   // [buttons.rotate.left, buttons.rotate.right],
       //   // [buttons.flip.horiz, buttons.flip.vert],

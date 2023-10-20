@@ -17,6 +17,11 @@ const messages = defineMessages({
     defaultMessage: 'Enter your question',
     description: 'Placeholder text for tinyMCE editor',
   },
+  solutionPlaceholder: {
+    id: 'authoring.problemEditor.questionwidget.solution.placeholder',
+    defaultMessage: 'Enter your solution',
+    description: 'Placeholder text for tinyMCE editor',
+  },
 });
 
 export default messages;

@@ -53,7 +53,7 @@ export const AdvanceTypeSelect = ({
                     overlay={(
                       <Tooltip>
                         <div className="text-left">
-                          {intl.formatMessage(messages.supportStatusTooltipMessage, { supportStatus: data.status.replaceAll(' ', '_') })}
+                          {intl.formatMessage(messages.supportStatusTooltipMessage, { supportStatus: data.status.replaceAll(' ', '_').replaceAll("(","").replaceAll(")","") })}
                         </div>
                       </Tooltip>
                     )}

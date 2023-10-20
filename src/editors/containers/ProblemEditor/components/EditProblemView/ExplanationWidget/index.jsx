@@ -31,7 +31,7 @@ export const ExplanationWidget = ({
         editorContentHtml={settings?.solutionExplanation}
         setEditorRef={setEditorRef}
         minHeight={150}
-        placeholder={intl.formatMessage(messages.placeholder)}
+        placeholder={intl.formatMessage(messages.solutionPlaceholder)}
       />
     </div>
   );

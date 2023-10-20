@@ -18,9 +18,9 @@ export const ProblemTypeKeys = StrictDict({
 
 export const ProblemTypes = StrictDict({
   [ProblemTypeKeys.SINGLESELECT]: {
-    title: 'Single select (Một lựa chọn)',
+    title: 'Single select (Trắc nghiệm một đáp án đúng)',
     preview: singleSelect,
-    previewDescription: 'Learners must select the correct answer from a list of possible options. (Người học phải chọn câu trả lời đúng từ danh sách các câu trả lời có thể.)',
+    previewDescription: 'Learners must select the correct answer from a list of possible options. (Người học phải chọn một câu trả lời đúng từ danh sách các câu trả lời có thể.)',
     description: 'Enter your single select answers below and select which choices are correct. Learners must choose one correct answer. (Nhập các câu trả lời của bạn bên dưới và chọn câu trả lời đúng. Người học phải chọn một câu trả lời đúng.)',
     helpLink: 'https://edx.readthedocs.io/projects/edx-partner-course-staff/en/latest/exercises_tools/multiple_choice.html',
     prev: ProblemTypeKeys.TEXTINPUT,
@@ -28,7 +28,7 @@ export const ProblemTypes = StrictDict({
     template: basicOlxTemplates.singleSelect,
   },
   [ProblemTypeKeys.MULTISELECT]: {
-    title: 'Multi-select (Nhiều lựa chọn)',
+    title: 'Multi-select (Trắc nghiệm một hoặc nhiều đáp án đúng)',
     preview: multiSelect,
     previewDescription: 'Learners must select all correct answers from a list of possible options. (Người học phải chọn tất cả các câu trả lời đúng từ danh sách các câu trả lời có thể.)',
     description: 'Enter your multi select answers below and select which choices are correct. Learners must choose all correct answers. (Nhập các câu trả lời của bạn bên dưới và chọn những câu trả lời đúng. Người học phải chọn tất cả các câu trả lời đúng.)',
