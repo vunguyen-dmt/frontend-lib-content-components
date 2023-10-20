@@ -37,7 +37,7 @@ export const EditorFooter = ({
 
       <ModalDialog.Footer className="shadow-sm">
         <ActionRow>
-          {
+          {/* {
         // TODO: Remove this code when the problem Editor Beta is complete.
         blockType === blockTypes.problem
           && (
@@ -45,7 +45,7 @@ export const EditorFooter = ({
             Share Feedback
           </Hyperlink>
           )
-        }
+        } */}
           <ActionRow.Spacer />
           <Button
             aria-label={intl.formatMessage(messages.cancelButtonAriaLabel)}

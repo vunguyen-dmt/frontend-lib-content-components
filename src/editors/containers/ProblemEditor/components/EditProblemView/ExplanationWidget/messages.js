@@ -14,7 +14,7 @@ const messages = defineMessages({
   },
   placeholder: {
     id: 'authoring.problemEditor.questionwidget.placeholder',
-    defaultMessage: 'Enter your explanation',
+    defaultMessage: 'Enter your question',
     description: 'Placeholder text for tinyMCE editor',
   },
 });

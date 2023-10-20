@@ -72,6 +72,11 @@ const messages = defineMessages({
     defaultMessage: 'Learn more about advanced problem types',
     description: 'Label for Learn more about advanced problem types button',
   },
+  learnMoreAdvancedButtonLabel: {
+    id: 'authoring.problemEditor.advanceProblem.learnMoreButtonLabel.label',
+    defaultMessage: 'Learn more about advanced problem types',
+    description: 'Label for Learn more about advanced problem types button',
+  }
 });
 
 export default messages;

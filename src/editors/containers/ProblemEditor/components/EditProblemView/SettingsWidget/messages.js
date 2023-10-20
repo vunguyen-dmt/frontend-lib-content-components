@@ -1,7 +1,6 @@
 import { defineMessages } from '@edx/frontend-platform/i18n';
 
 const messages = defineMessages({
-
   settingsWidgetTitle: {
     id: 'authoring.problemeditor.settings.settingsWidgetTitle',
     defaultMessage: 'Settings',
@@ -186,6 +185,11 @@ const messages = defineMessages({
     id: 'authoring.problemeditor.settings.showAnswer.explanation.text',
     defaultMessage: 'Provide an explanation for the correct answer.',
     description: 'Solution Explanation text',
+  },
+  default: {
+    id: 'authoring.problemeditor.settings.showAnswer.default',
+    defaultMessage: 'Default',
+    description: 'Default text',
   },
 });
 
