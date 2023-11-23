@@ -53,7 +53,7 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
           buttons.outdent,
           buttons.indent,
         ],
-        [imageUploadButton, buttons.media, buttons.link, buttons.unlink, buttons.blockQuote, buttons.codeBlock],
+        [buttons.media, buttons.link, buttons.unlink, buttons.blockQuote, buttons.codeBlock],
         [buttons.table, buttons.emoticons, buttons.charmap, buttons.wirisMathType, buttons.wirisChemType, buttons.hr],
         [buttons.removeFormat, codeButton],
       ]) : false,
@@ -74,7 +74,7 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
           buttons.bullist,
           buttons.numlist,
         ],
-        [imageUploadButton, buttons.blockQuote, buttons.codeBlock],
+        [buttons.media, buttons.blockQuote, buttons.codeBlock],
         [buttons.table, buttons.emoticons, buttons.charmap, buttons.wirisMathType, buttons.wirisChemType, buttons.removeFormat],
       ]),
       quickbarsSelectionToolbar: toolbar ? false : mapToolbars([
@@ -88,7 +88,7 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
           buttons.bullist,
           buttons.numlist,
         ],
-        [imageUploadButton, buttons.blockQuote, buttons.codeBlock],
+        [buttons.media, buttons.blockQuote, buttons.codeBlock],
         [buttons.table, buttons.emoticons, buttons.charmap, buttons.wirisMathType, buttons.wirisChemType, buttons.removeFormat],
       ]),
       config: {
