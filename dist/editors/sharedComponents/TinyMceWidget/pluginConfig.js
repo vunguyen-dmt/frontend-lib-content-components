@@ -57,11 +57,16 @@ const pluginConfig = _ref => {
     audio_template_callback: function (data) {
       return `<audio controls="controls"><source src="${data.source}" /></audio>`;
     },
-    video_template_callback: function (data) {
-      reject({
-        msg: 'Vui lòng sử dụng thành phần Video. Please use Video component instead.'
-      });
-      return "";
+    media_url_resolver: function (data, resolve, reject) {
+      if (data.url && data.url.toLowerCase().endsWith('.mp4')) {
+        reject({
+          msg: 'Vui lòng sử dụng thành phần Video. Please use Video component instead.'
+        });
+      } else {
+        resolve({
+          html: ''
+        });
+      }
     },
     file_browser_callback_types: false
   });
