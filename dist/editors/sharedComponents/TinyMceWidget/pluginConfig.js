@@ -55,9 +55,11 @@ const pluginConfig = _ref => {
       draggable_modal: true
     },
     audio_template_callback: function (data) {
+      console.log('audio_template_callback ' + JSON.stringify(data));
       return `<audio controls="controls"><source src="${data.source}" /></audio>`;
     },
     media_url_resolver: function (data, resolve, reject) {
+      console.log('media_url_resolver ' + JSON.stringify(data));
       if (data.url && data.url.toLowerCase().endsWith('.mp4')) {
         reject({
           msg: 'Vui lòng sử dụng thành phần Video. Please use Video component instead.'
