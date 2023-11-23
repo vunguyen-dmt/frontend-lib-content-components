@@ -1,0 +1,654 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.stripNonTextTags = exports.responseKeys = exports.nonQuestionKeys = exports.indexToLetterMap = exports.OLXParser = void 0;
+var _fastXmlParser = require("fast-xml-parser");
+var _lodashEs = _interopRequireDefault(require("lodash-es"));
+var _problem = require("../../../data/constants/problem");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); } // Parse OLX to JavaScript objects.
+/* eslint no-eval: 0 */
+const indexToLetterMap = [...Array(26)].map((val, i) => String.fromCharCode(i + 65));
+exports.indexToLetterMap = indexToLetterMap;
+const nonQuestionKeys = ['@_answer', '@_type', 'additional_answer', 'checkboxgroup', 'choicegroup', 'choiceresponse', 'correcthint', 'demandhint', 'formulaequationinput', 'multiplechoiceresponse', 'numericalresponse', 'optioninput', 'optionresponse', 'responseparam', 'solution', 'stringequalhint', 'stringresponse', 'textline'];
+exports.nonQuestionKeys = nonQuestionKeys;
+const responseKeys = ['multiplechoiceresponse', 'numericalresponse', 'optionresponse', 'stringresponse', 'choiceresponse', 'multiplechoiceresponse', 'truefalseresponse', 'optionresponse', 'numericalresponse', 'stringresponse', 'customresponse', 'symbolicresponse', 'coderesponse', 'externalresponse', 'formularesponse', 'schematicresponse', 'imageresponse', 'annotationresponse', 'choicetextresponse'];
+exports.responseKeys = responseKeys;
+const stripNonTextTags = _ref => {
+  let {
+    input,
+    tag
+  } = _ref;
+  const stripedTags = {};
+  Object.entries(input).forEach(_ref2 => {
+    let [key, value] = _ref2;
+    if (key !== tag) {
+      stripedTags[key] = value;
+    }
+  });
+  return stripedTags;
+};
+exports.stripNonTextTags = stripNonTextTags;
+class OLXParser {
+  constructor(olxString) {
+    this.problem = {};
+    this.questionData = {};
+    const questionOptions = {
+      ignoreAttributes: false,
+      alwaysCreateTextNode: true,
+      numberParseOptions: {
+        leadingZeros: false,
+        hex: false
+      },
+      preserveOrder: true,
+      processEntities: false
+    };
+    const parserOptions = {
+      ignoreAttributes: false,
+      alwaysCreateTextNode: true,
+      numberParseOptions: {
+        leadingZeros: false,
+        hex: false
+      },
+      processEntities: false
+    };
+    const builderOptions = {
+      ignoreAttributes: false,
+      numberParseOptions: {
+        leadingZeros: false,
+        hex: false
+      },
+      processEntities: false
+    };
+    // There are two versions of the parsed XLM because the question requires the order of the
+    // parsed data to be preserved. However, all the other widgets need the data grouped by
+    // the wrapping tag.
+    const questionParser = new _fastXmlParser.XMLParser(questionOptions);
+    const parser = new _fastXmlParser.XMLParser(parserOptions);
+    this.builder = new _fastXmlParser.XMLBuilder(builderOptions);
+    this.parsedOLX = parser.parse(olxString);
+    this.parsedQuestionOLX = questionParser.parse(olxString);
+    if (_lodashEs.default.has(this.parsedOLX, 'problem')) {
+      this.problem = this.parsedOLX.problem;
+      this.questionData = this.parsedQuestionOLX[0].problem;
+    }
+  }
+
+  /** parseMultipleChoiceAnswers(problemType, widgetName, option)
+   * parseMultipleChoiceAnswers takes a problemType, widgetName, and a valid option. The
+   * olx for the given problem type and widget is parsed. Depending on the problem
+   * type, the title for an answer will be parsed differently because of single select and multiselect
+   * problems are rich text while dropdown answers are plain text. The rich text is parsed into an object
+   * and is converted back into a string before being added to the answer object. The parsing returns a
+   * data object with an array of answer objects. If the olx has grouped feedback, this will also be
+   * included in the data object.
+   * @param {string} problemType - string of the olx problem type
+   * @param {string} widgetName - string of the wrapping tag name (optioninput, choicegroup, checkboxgroup)
+   * @param {string} option - string of the type of answers (choice or option)
+   * @return {object} object containing an array of answer objects and possibly an array of grouped feedback
+   */
+  parseMultipleChoiceAnswers(problemType, widgetName, option) {
+    const answers = [];
+    let data = {};
+    const widget = _lodashEs.default.get(this.problem, `${problemType}.${widgetName}`);
+    const permissableTags = ['choice', '@_type', 'compoundhint', 'option', '#text'];
+    if (_lodashEs.default.keys(widget).some(tag => !permissableTags.includes(tag))) {
+      throw new Error('Misc Tags, reverting to Advanced Editor');
+    }
+    const choice = _lodashEs.default.get(widget, option);
+    const isComplexAnswer = [_problem.ProblemTypeKeys.SINGLESELECT, _problem.ProblemTypeKeys.MULTISELECT].includes(problemType);
+    if (_lodashEs.default.isEmpty(choice)) {
+      answers.push({
+        id: indexToLetterMap[answers.length],
+        title: '',
+        correct: true
+      });
+    } else if (_lodashEs.default.isArray(choice)) {
+      choice.forEach((element, index) => {
+        let title = element['#text'];
+        if (isComplexAnswer) {
+          const answerTitle = stripNonTextTags({
+            input: element,
+            tag: `${option}hint`
+          });
+          title = this.builder.build(answerTitle);
+        }
+        const correct = eval(element['@_correct'].toLowerCase());
+        const id = indexToLetterMap[index];
+        const feedback = this.getAnswerFeedback(element, `${option}hint`);
+        answers.push(_objectSpread({
+          id,
+          correct,
+          title
+        }, feedback));
+      });
+    } else {
+      let title = choice['#text'];
+      if (isComplexAnswer) {
+        const answerTitle = stripNonTextTags({
+          input: choice,
+          tag: `${option}hint`
+        });
+        title = this.builder.build(answerTitle);
+      }
+      const feedback = this.getAnswerFeedback(choice, `${option}hint`);
+      answers.push(_objectSpread({
+        correct: eval(choice['@_correct'].toLowerCase()),
+        id: indexToLetterMap[answers.length],
+        title
+      }, feedback));
+    }
+    data = {
+      answers
+    };
+    const groupFeedbackList = this.getGroupedFeedback(widget);
+    if (groupFeedbackList.length) {
+      data = _objectSpread(_objectSpread({}, data), {}, {
+        groupFeedbackList
+      });
+    }
+    return data;
+  }
+
+  /** getAnswerFeedback(choice, hintKey)
+   * getAnswerFeedback takes a choice and a valid option. The choice object is checked for
+   * selected and unselected feedback. The respective values are added to the feedback object.
+   * The feedback object is returned.
+   * @param {object} choice - object of an answer choice
+   * @param {string} hintKey - string of the wrapping tag name (optionhint or choicehint)
+   * @return {object} object containing selected and unselected feedback
+   */
+  getAnswerFeedback(choice, hintKey) {
+    let feedback = {};
+    let feedbackKeys = 'selectedFeedback';
+    if (_lodashEs.default.has(choice, hintKey)) {
+      const answerFeedback = choice[hintKey];
+      if (_lodashEs.default.isArray(answerFeedback)) {
+        answerFeedback.forEach(element => {
+          if (_lodashEs.default.has(element, '@_selected')) {
+            feedbackKeys = eval(element['@_selected'].toLowerCase()) ? 'selectedFeedback' : 'unselectedFeedback';
+          }
+          feedback = _objectSpread(_objectSpread({}, feedback), {}, {
+            [feedbackKeys]: this.builder.build(element)
+          });
+        });
+      } else {
+        if (_lodashEs.default.has(answerFeedback, '@_selected')) {
+          feedbackKeys = eval(answerFeedback['@_selected'].toLowerCase()) ? 'selectedFeedback' : 'unselectedFeedback';
+        }
+        feedback = {
+          [feedbackKeys]: this.builder.build(answerFeedback)
+        };
+      }
+    }
+    return feedback;
+  }
+
+  /** getGroupedFeedback(choices)
+   * getGroupedFeedback takes choices. The choices with the attribute compoundhint are parsed for
+   * the text value and the answers associated with the feedback. The groupFeedback array is returned.
+   * @param {object} choices - object of problem's subtags
+   * @return {array} array containing objects of feedback and associated answer ids
+   */
+  getGroupedFeedback(choices) {
+    const groupFeedback = [];
+    if (_lodashEs.default.has(choices, 'compoundhint')) {
+      const groupFeedbackArray = choices.compoundhint;
+      if (_lodashEs.default.isArray(groupFeedbackArray)) {
+        groupFeedbackArray.forEach(element => {
+          const parsedFeedback = stripNonTextTags({
+            input: element,
+            tag: '@_value'
+          });
+          groupFeedback.push({
+            id: groupFeedback.length,
+            answers: element['@_value'].split(' '),
+            feedback: this.builder.build(parsedFeedback)
+          });
+        });
+      } else {
+        const parsedFeedback = stripNonTextTags({
+          input: groupFeedbackArray,
+          tag: '@_value'
+        });
+        groupFeedback.push({
+          id: groupFeedback.length,
+          answers: groupFeedbackArray['@_value'].split(' '),
+          feedback: this.builder.build(parsedFeedback)
+        });
+      }
+    }
+    return groupFeedback;
+  }
+
+  /** parseStringResponse()
+   * The OLX saved to the class constuctor is parsed for text input answers. There are two
+   * types of tags with the answer attribute, stringresponse (the problem wrapper) and
+   * additional_answer. Looping through each tag, the associated title and feedback are added
+   * to the answers object and appended to the answers array. The array returned in an object
+   * with the key "answers". The object also conatins additional attributes that belong to the
+   * string response tag.
+   * @return {object} object containing an array of answer objects and object of additionalStringAttributes
+   */
+  parseStringResponse() {
+    const {
+      stringresponse
+    } = this.problem;
+    const answers = [];
+    let answerFeedback = '';
+    let additionalStringAttributes = {};
+    let data = {};
+    const feedback = this.getFeedback(stringresponse);
+    answers.push({
+      id: indexToLetterMap[answers.length],
+      title: stringresponse['@_answer'],
+      correct: true,
+      selectedFeedback: feedback
+    });
+
+    // Parsing additional_answer for string response.
+    const additionalAnswer = _lodashEs.default.get(stringresponse, 'additional_answer', []);
+    if (_lodashEs.default.isArray(additionalAnswer)) {
+      additionalAnswer.forEach(newAnswer => {
+        answerFeedback = this.getFeedback(newAnswer);
+        answers.push({
+          id: indexToLetterMap[answers.length],
+          title: newAnswer['@_answer'],
+          correct: true,
+          selectedFeedback: answerFeedback
+        });
+      });
+    } else {
+      answerFeedback = this.getFeedback(additionalAnswer);
+      answers.push({
+        id: indexToLetterMap[answers.length],
+        title: additionalAnswer['@_answer'],
+        correct: true,
+        selectedFeedback: answerFeedback
+      });
+    }
+
+    // Parsing stringequalhint for string response.
+    const stringEqualHint = _lodashEs.default.get(stringresponse, 'stringequalhint', []);
+    if (_lodashEs.default.isArray(stringEqualHint)) {
+      stringEqualHint.forEach(newAnswer => {
+        const parsedFeedback = stripNonTextTags({
+          input: newAnswer,
+          tag: '@_answer'
+        });
+        answerFeedback = this.builder.build(parsedFeedback);
+        answers.push({
+          id: indexToLetterMap[answers.length],
+          title: newAnswer['@_answer'],
+          correct: false,
+          selectedFeedback: answerFeedback
+        });
+      });
+    } else {
+      const parsedFeedback = stripNonTextTags({
+        input: stringEqualHint,
+        tag: '@_answer'
+      });
+      answerFeedback = this.builder.build(parsedFeedback);
+      answers.push({
+        id: indexToLetterMap[answers.length],
+        title: stringEqualHint['@_answer'],
+        correct: false,
+        selectedFeedback: answerFeedback
+      });
+    }
+
+    // TODO: Support multiple types.
+    additionalStringAttributes = {
+      type: _lodashEs.default.get(stringresponse, '@_type'),
+      textline: {
+        size: _lodashEs.default.get(stringresponse, 'textline.@_size')
+      }
+    };
+    data = {
+      answers,
+      additionalStringAttributes
+    };
+    return data;
+  }
+
+  /** parseNumericResponse()
+   * The OLX saved to the class constuctor is parsed for numeric answers. There are two
+   * types of tags for numeric answers, responseparam and additional_answer. Looping through
+   * each tag, the associated title and feedback and if the answer is an answer range are
+   * added to the answers object and appended to the answers array. The array returned in
+   * an object with the key "answers".
+   * @return {object} object containing an array of answer objects
+   */
+  parseNumericResponse() {
+    const {
+      numericalresponse
+    } = this.problem;
+    let answerFeedback = '';
+    const answers = [];
+    let responseParam = {};
+    const feedback = this.getFeedback(numericalresponse);
+    if (_lodashEs.default.has(numericalresponse, 'responseparam')) {
+      const type = _lodashEs.default.get(numericalresponse, 'responseparam.@_type');
+      const defaultValue = _lodashEs.default.get(numericalresponse, 'responseparam.@_default');
+      responseParam = {
+        [type]: defaultValue
+      };
+    }
+    const isAnswerRange = /[([]\d*,\d*[)\]]/gm.test(numericalresponse['@_answer']);
+    answers.push(_objectSpread({
+      id: indexToLetterMap[answers.length],
+      title: numericalresponse['@_answer'],
+      correct: true,
+      selectedFeedback: feedback,
+      isAnswerRange
+    }, responseParam));
+
+    // Parsing additional_answer for numerical response.
+    const additionalAnswer = _lodashEs.default.get(numericalresponse, 'additional_answer', []);
+    if (_lodashEs.default.isArray(additionalAnswer)) {
+      additionalAnswer.forEach(newAnswer => {
+        answerFeedback = this.getFeedback(newAnswer);
+        answers.push({
+          id: indexToLetterMap[answers.length],
+          title: newAnswer['@_answer'],
+          correct: true,
+          selectedFeedback: answerFeedback
+        });
+      });
+    } else {
+      answerFeedback = this.getFeedback(additionalAnswer);
+      answers.push({
+        id: indexToLetterMap[answers.length],
+        title: additionalAnswer['@_answer'],
+        correct: true,
+        selectedFeedback: answerFeedback,
+        isAnswerRange: false
+      });
+    }
+    return {
+      answers
+    };
+  }
+
+  /** parseQuestions(problemType)
+   * parseQuestions takes a problemType. The problem type is used to determine where the
+   * text for the question lies (sibling or child to warpping problem type tags).
+   * Using the XMLBuilder, the question is built with its proper children (including label
+   * and description). The string version of the OLX is return, replacing the description
+   * tags with italicized tags for styling purposes.
+   * @param {string} problemType - string of the olx problem type
+   * @return {string} string of OLX
+   */
+  parseQuestions(problemType) {
+    const options = {
+      ignoreAttributes: false,
+      numberParseOptions: {
+        leadingZeros: false,
+        hex: false
+      },
+      preserveOrder: true,
+      processEntities: false
+    };
+    const builder = new _fastXmlParser.XMLBuilder(options);
+    const problemArray = _lodashEs.default.get(this.questionData[0], problemType) || this.questionData;
+    const questionArray = [];
+    problemArray.forEach(tag => {
+      const tagName = Object.keys(tag)[0];
+      if (!nonQuestionKeys.includes(tagName)) {
+        if (tagName === 'script') {
+          throw new Error('Script Tag, reverting to Advanced Editor');
+        }
+        questionArray.push(tag);
+      } else if (responseKeys.includes(tagName)) {
+        /* <label> and <description> tags often are both valid olx as siblings or children of response type tags.
+         They, however, do belong in the question, so we append them to the question.
+        */
+        tag[tagName].forEach(subTag => {
+          const subTagName = Object.keys(subTag)[0];
+          if (subTagName === 'label' || subTagName === 'description') {
+            questionArray.push(subTag);
+          }
+        });
+      }
+    });
+    const questionString = builder.build(questionArray);
+    return questionString.replace(/<description>/gm, '<em>').replace(/<\/description>/gm, '</em>');
+  }
+
+  /** getHints()
+   * The OLX saved to the class constuctor is parsed for demand hint tags with hint subtags. An empty array is returned
+   * if there are no hints in the OLX. Otherwise the hint tag is parsed and appended to the hintsObject arrary. After
+   * going through all the hints the hintsObject array is returned.
+   * @return {array} array of hint objects
+   */
+  getHints() {
+    const hintsObject = [];
+    if (_lodashEs.default.has(this.problem, 'demandhint.hint')) {
+      const hint = _lodashEs.default.get(this.problem, 'demandhint.hint');
+      if (_lodashEs.default.isArray(hint)) {
+        hint.forEach(element => {
+          const hintValue = this.builder.build(element);
+          hintsObject.push({
+            id: hintsObject.length,
+            value: hintValue
+          });
+        });
+      } else {
+        const hintValue = this.builder.build(hint);
+        hintsObject.push({
+          id: hintsObject.length,
+          value: hintValue
+        });
+      }
+    }
+    return hintsObject;
+  }
+
+  /** parseQuestions(problemType)
+   * parseQuestions takes a problemType. The problem type is used to determine where the
+   * text for the solution lies (sibling or child to warpping problem type tags).
+   * Using the XMLBuilder, the solution is built removing the redundant "explanation" that is
+   * appended for Studio styling purposes. The string version of the OLX is return.
+   * @param {string} problemType - string of the olx problem type
+   * @return {string} string of OLX
+   */
+  getSolutionExplanation(problemType) {
+    if (!_lodashEs.default.has(this.problem, `${problemType}.solution`) && !_lodashEs.default.has(this.problem, 'solution')) {
+      return null;
+    }
+    let solution = _lodashEs.default.get(this.problem, `${problemType}.solution`, null) || _lodashEs.default.get(this.problem, 'solution', null);
+    const wrapper = Object.keys(solution)[0];
+    if (Object.keys(solution).length === 1 && wrapper === 'div') {
+      const parsedSolution = {};
+      Object.entries(solution.div).forEach(_ref3 => {
+        let [key, value] = _ref3;
+        if (key.indexOf('@_' === -1)) {
+          // The redundant "explanation" title should be removed.
+          // If the key is a paragraph or h2, and the text of either the first or only item is "Explanation."
+          if ((key === 'p' || key === 'h2') && (_lodashEs.default.get(value, '#text', null) === 'Explanation' || _lodashEs.default.isArray(value) && _lodashEs.default.get(value[0], '#text', null) === 'Explanation')) {
+            if (_lodashEs.default.isArray(value)) {
+              value.shift();
+              parsedSolution[key] = value;
+            }
+          } else {
+            parsedSolution[key] = value;
+          }
+        }
+      });
+      solution = parsedSolution;
+    }
+    const solutionString = this.builder.build(solution);
+    return solutionString;
+  }
+
+  /** getFeedback(xmlElement)
+   * getFeedback takes xmlElement. The xmlElement is searched for the attribute correcthint.
+   * An empty string is returned if the parameter is not present. Otherwise a string of the feedback
+   * is returned.
+   * @param {object} xmlElement - object of answer attributes
+   * @return {string} string of feedback
+   */
+  getFeedback(xmlElement) {
+    if (!_lodashEs.default.has(xmlElement, 'correcthint')) {
+      return '';
+    }
+    const feedback = _lodashEs.default.get(xmlElement, 'correcthint');
+    const feedbackString = this.builder.build(feedback);
+    return feedbackString;
+  }
+
+  /** getProblemType()
+   * The OLX saved to the class constuctor is parsed for a valid problem type (referencing problemKeys).
+   * For blank problems, it returns null. For OLX problems tags not defined in problemKeys or OLX with
+   * multiple problem tags, it returns advanced. For defined, single problem tag, it returns the
+   * associated problem type.
+   * @return {string} problem type
+   */
+  getProblemType() {
+    const problemKeys = Object.keys(this.problem);
+    const problemTypeKeys = problemKeys.filter(key => Object.values(_problem.ProblemTypeKeys).indexOf(key) !== -1);
+    if (problemTypeKeys.length === 0) {
+      // a blank problem is a problem which contains only `<problem></problem>` as it's olx.
+      // blank problems are not given types, so that a type may be selected.
+      if (problemKeys.length === 1 && problemKeys[0] === '#text' && this.problem[problemKeys[0]] === '') {
+        return null;
+      }
+      // if we have no matching problem type, the problem is advanced.
+      return _problem.ProblemTypeKeys.ADVANCED;
+    }
+    // make sure compound problems are treated as advanced
+    if (problemTypeKeys.length > 1 || _lodashEs.default.isArray(this.problem[problemTypeKeys[0]]) && this.problem[problemTypeKeys[0]].length > 1) {
+      return _problem.ProblemTypeKeys.ADVANCED;
+    }
+    const problemType = problemTypeKeys[0];
+    return problemType;
+  }
+
+  /** getGeneralFeedback({ answers, problemType })
+   * getGeneralFeedback takes answers and problemType. The problem type determines if the problem should be checked
+   * for general feedback. The incorrect answers are checked to seee if all of their feedback is the same and
+   * returns the first incorrect answer's feedback if true. When conditions are unmet, it returns and empty string.
+   * @param {array} answers - array of answer objects
+   * @param {string} problemType - string of string of the olx problem type
+   * @return {string} text for incorrect feedback
+   */
+  getGeneralFeedback(_ref4) {
+    let {
+      answers,
+      problemType
+    } = _ref4;
+    /* Feedback is Generalized for a Problem IFF:
+    1. The problem is of Types: Single Select or Dropdown.
+    2. All the problem's incorrect, if Selected answers are equivalent strings, and there is no other feedback.
+    */
+    if (problemType === _problem.ProblemTypeKeys.SINGLESELECT || problemType === _problem.ProblemTypeKeys.DROPDOWN) {
+      const firstIncorrectAnswerText = answers.find(answer => answer.correct === false)?.selectedFeedback;
+      const isAllIncorrectSelectedFeedbackTheSame = answers.every(answer => answer.correct ? true : answer?.selectedFeedback === firstIncorrectAnswerText);
+      if (isAllIncorrectSelectedFeedbackTheSame) {
+        return firstIncorrectAnswerText;
+      }
+    }
+    return '';
+  }
+  getParsedOLXData() {
+    if (_lodashEs.default.isEmpty(this.problem)) {
+      return {};
+    }
+    if (Object.keys(this.problem).some(key => key.indexOf('@_') !== -1)) {
+      throw new Error('Misc Attributes asscoiated with problem, opening in advanced editor');
+    }
+    let answersObject = {};
+    let additionalAttributes = {};
+    let groupFeedbackList = [];
+    const problemType = this.getProblemType();
+    const hints = this.getHints();
+    const question = this.parseQuestions(problemType);
+    const solutionExplanation = this.getSolutionExplanation(problemType);
+    switch (problemType) {
+      case _problem.ProblemTypeKeys.DROPDOWN:
+        answersObject = this.parseMultipleChoiceAnswers(_problem.ProblemTypeKeys.DROPDOWN, 'optioninput', 'option');
+        break;
+      case _problem.ProblemTypeKeys.TEXTINPUT:
+        answersObject = this.parseStringResponse();
+        break;
+      case _problem.ProblemTypeKeys.NUMERIC:
+        answersObject = this.parseNumericResponse();
+        break;
+      case _problem.ProblemTypeKeys.MULTISELECT:
+        answersObject = this.parseMultipleChoiceAnswers(_problem.ProblemTypeKeys.MULTISELECT, 'checkboxgroup', 'choice');
+        break;
+      case _problem.ProblemTypeKeys.SINGLESELECT:
+        answersObject = this.parseMultipleChoiceAnswers(_problem.ProblemTypeKeys.SINGLESELECT, 'choicegroup', 'choice');
+        break;
+      case _problem.ProblemTypeKeys.ADVANCED:
+        return {
+          problemType,
+          settings: {}
+        };
+      default:
+        // if problem is unset, return null
+        return {};
+    }
+    const generalFeedback = this.getGeneralFeedback({
+      answers: answersObject.answers,
+      problemType
+    });
+    if (_lodashEs.default.has(answersObject, 'additionalStringAttributes')) {
+      additionalAttributes = _objectSpread({}, answersObject.additionalStringAttributes);
+    }
+    if (_lodashEs.default.has(answersObject, 'groupFeedbackList')) {
+      groupFeedbackList = answersObject.groupFeedbackList;
+    }
+    const {
+      answers
+    } = answersObject;
+    const settings = {
+      hints
+    };
+    if (_problem.ProblemTypeKeys.NUMERIC === problemType && _lodashEs.default.has(answers[0], 'tolerance')) {
+      const toleranceValue = answers[0].tolerance;
+      if (!toleranceValue || toleranceValue.length === 0) {
+        settings.tolerance = {
+          value: null,
+          type: 'None'
+        };
+      } else if (toleranceValue.includes('%')) {
+        settings.tolerance = {
+          value: parseInt(toleranceValue.slice(0, -1)),
+          type: 'Percent'
+        };
+      } else {
+        settings.tolerance = {
+          value: parseInt(toleranceValue),
+          type: 'Number'
+        };
+      }
+    } else {
+      settings.tolerance = {
+        value: null,
+        type: 'None'
+      };
+    }
+    if (solutionExplanation) {
+      settings.solutionExplanation = solutionExplanation;
+    }
+    return {
+      question,
+      settings,
+      answers,
+      problemType,
+      additionalAttributes,
+      generalFeedback,
+      groupFeedbackList
+    };
+  }
+}
+exports.OLXParser = OLXParser;
+//# sourceMappingURL=OLXParser.js.map
