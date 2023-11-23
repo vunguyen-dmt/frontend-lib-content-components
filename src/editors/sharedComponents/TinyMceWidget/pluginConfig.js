@@ -31,6 +31,7 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
         image,
         imageTools,
         quickToolbar,
+        plugins.media,
       ].join(' '),
       menubar: false,
       toolbar: toolbar ? mapToolbars([
@@ -52,7 +53,7 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
           buttons.outdent,
           buttons.indent,
         ],
-        [imageUploadButton, buttons.link, buttons.unlink, buttons.blockQuote, buttons.codeBlock],
+        [imageUploadButton, buttons.media, buttons.link, buttons.unlink, buttons.blockQuote, buttons.codeBlock],
         [buttons.table, buttons.emoticons, buttons.charmap, buttons.wirisMathType, buttons.wirisChemType, buttons.hr],
         [buttons.removeFormat, codeButton],
       ]) : false,
@@ -106,6 +107,14 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
         external_plugins: { tiny_mce_wiris: 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js' },
         draggable_modal: true,
       },
+      audio_template_callback: function(data) {
+        return `<audio controls="controls"><source src="${data.source}" /></audio>`;
+      },
+      video_template_callback: function(data) {
+        reject({msg: 'Vui lòng sử dụng thành phần Video. Please use Video component instead.'});
+        return "";
+      },
+      file_browser_callback_types: false
     })
   );
 };
