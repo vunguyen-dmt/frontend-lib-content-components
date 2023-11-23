@@ -52,22 +52,22 @@ const pluginConfig = _ref => {
       external_plugins: {
         tiny_mce_wiris: 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js'
       },
-      draggable_modal: true
-    },
-    audio_template_callback: function (data) {
-      console.log('audio_template_callback ' + JSON.stringify(data));
-      return `<audio controls="controls"><source src="${data.source}" /></audio>`;
-    },
-    media_url_resolver: function (data, resolve, reject) {
-      console.log('media_url_resolver ' + JSON.stringify(data));
-      if (data.url && data.url.toLowerCase().endsWith('.mp4')) {
-        reject({
-          msg: 'Vui lòng sử dụng thành phần Video. Please use Video component instead.'
-        });
-      } else {
-        resolve({
-          html: ''
-        });
+      draggable_modal: true,
+      audio_template_callback: function (data) {
+        console.log('audio_template_callback ' + JSON.stringify(data));
+        return `<audio controls="controls"><source src="${data.source}" /></audio>`;
+      },
+      media_url_resolver: function (data, resolve, reject) {
+        console.log('media_url_resolver ' + JSON.stringify(data));
+        if (data.url && data.url.toLowerCase().endsWith('.mp4')) {
+          reject({
+            msg: 'Please use Video component instead. <br/>Vui lòng sử dụng thành phần Video. '
+          });
+        } else {
+          resolve({
+            html: ''
+          });
+        }
       }
     },
     file_browser_callback_types: false
