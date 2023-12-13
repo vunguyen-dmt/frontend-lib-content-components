@@ -16,11 +16,20 @@ export const {
 } = appHooks;
 
 export const state = StrictDict({
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   isCancelConfirmModalOpen: (val) => useState(val),
 });
 
-export const handleSaveClicked = ({ dispatch, getContent, validateEntry }) => {
-  const destination = useSelector(selectors.app.returnUrl);
+export const handleSaveClicked = ({
+  dispatch,
+  getContent,
+  validateEntry,
+  returnFunction,
+}) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const returnUrl = useSelector(selectors.app.returnUrl);
+  const destination = returnFunction ? '' : returnUrl;
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const analytics = useSelector(selectors.app.analytics);
 
   return () => saveBlock({
@@ -28,6 +37,7 @@ export const handleSaveClicked = ({ dispatch, getContent, validateEntry }) => {
     content: getContent({ dispatch }),
     destination,
     dispatch,
+    returnFunction,
     validateEntry,
   });
 };
@@ -41,19 +51,26 @@ export const cancelConfirmModalToggle = () => {
   };
 };
 
-export const handleCancel = ({ onClose }) => {
+export const handleCancel = ({ onClose, returnFunction }) => {
   if (onClose) {
     return onClose;
   }
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const returnUrl = useSelector(selectors.app.returnUrl);
   return navigateCallback({
-    destination: useSelector(selectors.app.returnUrl),
+    returnFunction,
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    destination: returnFunction ? '' : returnUrl,
     analyticsEvent: analyticsEvt.editorCancelClick,
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     analytics: useSelector(selectors.app.analytics),
   });
 };
 
+// eslint-disable-next-line react-hooks/rules-of-hooks
 export const isInitialized = () => useSelector(selectors.app.isInitialized);
 
+// eslint-disable-next-line react-hooks/rules-of-hooks
 export const saveFailed = () => useSelector((rootState) => (
   selectors.requests.isFailed(rootState, { requestKey: RequestKeys.saveBlock })
 ));

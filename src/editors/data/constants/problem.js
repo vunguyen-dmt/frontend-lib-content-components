@@ -88,7 +88,7 @@ export const AdvanceProblemKeys = StrictDict({
 
 export const AdvanceProblems = StrictDict({
   [AdvanceProblemKeys.BLANK]: {
-    title: 'Blank advanced problem',
+    title: 'Blank problem',
     status: '',
     template: '<problem></problem>',
   },
@@ -217,3 +217,13 @@ export const RandomizationTypes = StrictDict({
 });
 
 export const RichTextProblems = [ProblemTypeKeys.SINGLESELECT, ProblemTypeKeys.MULTISELECT];
+
+export const settingsOlxAttributes = [
+  '@_display_name',
+  '@_weight',
+  '@_max_atempts',
+  '@_showanswer',
+  '@_show_reset_button',
+  '@_submission_wait_seconds',
+  '@_attempts_before_showanswer_button',
+];

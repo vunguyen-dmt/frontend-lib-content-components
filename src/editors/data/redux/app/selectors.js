@@ -26,9 +26,12 @@ export const simpleSelectors = {
 };
 
 export const returnUrl = createSelector(
-  [module.simpleSelectors.unitUrl, module.simpleSelectors.studioEndpointUrl, module.simpleSelectors.learningContextId],
-  (unitUrl, studioEndpointUrl, learningContextId) => (
-    urls.returnUrl({ studioEndpointUrl, unitUrl, learningContextId })
+  [module.simpleSelectors.unitUrl, module.simpleSelectors.studioEndpointUrl, module.simpleSelectors.learningContextId,
+    module.simpleSelectors.blockId],
+  (unitUrl, studioEndpointUrl, learningContextId, blockId) => (
+    urls.returnUrl({
+      studioEndpointUrl, unitUrl, learningContextId, blockId,
+    })
   ),
 );
 
@@ -72,10 +75,14 @@ export const analytics = createSelector(
 export const isRaw = createSelector(
   [module.simpleSelectors.studioView],
   (studioView) => {
-    if (!studioView || !studioView.data || !studioView.data.html) {
+    if (!studioView?.data) {
       return null;
     }
-    if (studioView.data.html.includes('data-editor="raw"')) {
+    const { html, content } = studioView.data;
+    if (html && html.includes('data-editor="raw"')) {
+      return true;
+    }
+    if (content && content.includes('data-editor="raw"')) {
       return true;
     }
     return false;
@@ -83,12 +90,15 @@ export const isRaw = createSelector(
 );
 
 export const isLibrary = createSelector(
-  [module.simpleSelectors.learningContextId],
-  (learningContextId) => {
-    if (!learningContextId) {
-      return null;
-    }
+  [
+    module.simpleSelectors.learningContextId,
+    module.simpleSelectors.blockId,
+  ],
+  (learningContextId, blockId) => {
     if (learningContextId && learningContextId.startsWith('library-v1')) {
+      return true;
+    }
+    if (blockId && blockId.startsWith('lb:')) {
       return true;
     }
     return false;

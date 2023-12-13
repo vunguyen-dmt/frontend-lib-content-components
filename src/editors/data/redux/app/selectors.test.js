@@ -58,6 +58,7 @@ describe('app selectors unit tests', () => {
         simpleSelectors.unitUrl,
         simpleSelectors.studioEndpointUrl,
         simpleSelectors.learningContextId,
+        simpleSelectors.blockId,
       ]);
     });
     it('returns urls.returnUrl with the returnUrl', () => {
@@ -65,10 +66,13 @@ describe('app selectors unit tests', () => {
       const studioEndpointUrl = 'baseURL';
       const unitUrl = 'some unit url';
       const learningContextId = 'some learning context';
+      const blockId = 'block-v1 some v1 block id';
       expect(
-        cb(unitUrl, studioEndpointUrl, learningContextId),
+        cb(unitUrl, studioEndpointUrl, learningContextId, blockId),
       ).toEqual(
-        urls.returnUrl({ unitUrl, studioEndpointUrl, learningContextId }),
+        urls.returnUrl({
+          unitUrl, studioEndpointUrl, learningContextId, blockId,
+        }),
       );
     });
   });
@@ -117,9 +121,14 @@ describe('app selectors unit tests', () => {
   });
 
   describe('isRaw', () => {
-    const studioViewRaw = {
+    const studioViewCourseRaw = {
       data: {
         html: 'data-editor="raw"',
+      },
+    };
+    const studioViewV2LibraryRaw = {
+      data: {
+        content: 'data-editor="raw"',
       },
     };
     const studioViewVisual = {
@@ -135,8 +144,11 @@ describe('app selectors unit tests', () => {
     it('returns null if studioView is null', () => {
       expect(selectors.isRaw.cb(null)).toEqual(null);
     });
-    it('returns true if studioView is raw', () => {
-      expect(selectors.isRaw.cb(studioViewRaw)).toEqual(true);
+    it('returns true if course studioView is raw', () => {
+      expect(selectors.isRaw.cb(studioViewCourseRaw)).toEqual(true);
+    });
+    it('returns true if v2 library studioView is raw', () => {
+      expect(selectors.isRaw.cb(studioViewV2LibraryRaw)).toEqual(true);
     });
     it('returns false if the studioView is not Raw', () => {
       expect(selectors.isRaw.cb(studioViewVisual)).toEqual(false);
@@ -146,19 +158,43 @@ describe('app selectors unit tests', () => {
   describe('isLibrary', () => {
     const learningContextIdLibrary = 'library-v1:name';
     const learningContextIdCourse = 'course-v1:name';
-    it('is memoized based on studioView', () => {
+    it('is memoized based on isLibrary', () => {
       expect(selectors.isLibrary.preSelectors).toEqual([
         simpleSelectors.learningContextId,
+        simpleSelectors.blockId,
       ]);
     });
-    it('returns null if blockId is null', () => {
-      expect(selectors.isLibrary.cb(null)).toEqual(null);
+    describe('blockId is null', () => {
+      it('should return false when learningContextId null', () => {
+        expect(selectors.isLibrary.cb(null, null)).toEqual(false);
+      });
+      it('should return false when learningContextId defined', () => {
+        expect(selectors.isLibrary.cb(learningContextIdCourse, null)).toEqual(false);
+      });
     });
-    it('returns true if blockId starts with lib', () => {
-      expect(selectors.isLibrary.cb(learningContextIdLibrary)).toEqual(true);
+    describe('blockId is a course block', () => {
+      it('should return false when learningContextId null', () => {
+        expect(selectors.isLibrary.cb(null, 'block-v1:')).toEqual(false);
+      });
+      it('should return false when learningContextId defined', () => {
+        expect(selectors.isLibrary.cb(learningContextIdCourse, 'block-v1:')).toEqual(false);
+      });
     });
-    it('returns false if the blockId does not start with lib', () => {
-      expect(selectors.isLibrary.cb(learningContextIdCourse)).toEqual(false);
+    describe('blockId is a v2 library block', () => {
+      it('should return true when learningContextId null', () => {
+        expect(selectors.isLibrary.cb(null, 'lb:')).toEqual(true);
+      });
+      it('should return false when learningContextId is a v1 library', () => {
+        expect(selectors.isLibrary.cb(learningContextIdLibrary, 'lb:')).toEqual(true);
+      });
+    });
+    describe('blockId is a v1 library block', () => {
+      it('should return false when learningContextId null', () => {
+        expect(selectors.isLibrary.cb(null, 'library-v1')).toEqual(false);
+      });
+      it('should return true when learningContextId a v1 library', () => {
+        expect(selectors.isLibrary.cb(learningContextIdLibrary, 'library-v1')).toEqual(true);
+      });
     });
   });
 });

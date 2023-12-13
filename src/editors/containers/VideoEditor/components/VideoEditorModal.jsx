@@ -13,12 +13,15 @@ export const {
 
 export const hooks = {
   initialize: (dispatch, selectedVideoId, selectedVideoUrl) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     React.useEffect(() => {
       dispatch(thunkActions.video.loadVideoData(selectedVideoId, selectedVideoUrl));
     }, []);
   },
   returnToGallery: () => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const learningContextId = useSelector(selectors.app.learningContextId);
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const blockId = useSelector(selectors.app.blockId);
     return () => (navigateTo(`/course/${learningContextId}/editor/course-videos/${blockId}`));
   },
@@ -27,6 +30,7 @@ export const hooks = {
 const VideoEditorModal = ({
   close,
   isOpen,
+  isLibrary,
 }) => {
   const dispatch = useDispatch();
   const searchParams = new URLSearchParams(document.location.search);
@@ -39,6 +43,7 @@ const VideoEditorModal = ({
       close,
       isOpen,
       onReturn,
+      isLibrary,
     }}
     />
   );
@@ -50,5 +55,6 @@ VideoEditorModal.defaultProps = {
 VideoEditorModal.propTypes = {
   close: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
+  isLibrary: PropTypes.bool.isRequired,
 };
 export default VideoEditorModal;

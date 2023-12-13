@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import _, { isEmpty } from 'lodash-es';
 import { actions, selectors } from '..';
 import { removeItemOnce } from '../../../utils';
 import * as requests from './requests';
@@ -10,19 +11,32 @@ export const loadVideoData = (selectedVideoId, selectedVideoUrl) => (dispatch, g
   const state = getState();
   const blockValueData = state.app.blockValue.data;
   let rawVideoData = blockValueData.metadata ? blockValueData.metadata : {};
-  const courseData = state.app.courseDetails.data ? state.app.courseDetails.data : {};
-  if (selectedVideoId != null) {
-    const rawVideos = Object.values(selectors.app.videos(state));
-    const selectedVideo = rawVideos.find(video => video.edx_video_id === selectedVideoId);
-    rawVideoData = {
-      edx_video_id: selectedVideo.edx_video_id,
-      thumbnail: selectedVideo.course_video_image_url,
-      duration: selectedVideo.duration,
-      transcriptsFromSelected: selectedVideo.transcripts,
-      selectedVideoTranscriptUrls: selectedVideo.transcript_urls,
-    };
+  const rawVideos = Object.values(selectors.app.videos(state));
+  if (selectedVideoId !== undefined && selectedVideoId !== null) {
+    const selectedVideo = _.find(rawVideos, video => {
+      if (_.has(video, 'edx_video_id')) {
+        return video.edx_video_id === selectedVideoId;
+      }
+      return false;
+    });
+
+    if (selectedVideo !== undefined && selectedVideo !== null) {
+      rawVideoData = {
+        edx_video_id: selectedVideo.edx_video_id,
+        thumbnail: selectedVideo.course_video_image_url,
+        duration: selectedVideo.duration,
+        transcriptsFromSelected: selectedVideo.transcripts,
+        selectedVideoTranscriptUrls: selectedVideo.transcript_urls,
+      };
+    }
   }
-  const studioView = state.app.studioView?.data?.html;
+
+  const courseData = state.app.courseDetails.data ? state.app.courseDetails.data : {};
+  let studioView = state.app.studioView?.data?.html;
+  if (state.app.blockId.startsWith('lb:')) {
+    studioView = state.app.studioView?.data?.content;
+  }
+
   const {
     videoId,
     videoUrl,
@@ -36,6 +50,7 @@ export const loadVideoData = (selectedVideoId, selectedVideoUrl) => (dispatch, g
   // Use the selected video url first
   const videoSourceUrl = selectedVideoUrl != null ? selectedVideoUrl : videoUrl;
   const [licenseType, licenseOptions] = module.parseLicense({ licenseData: studioView, level: 'block' });
+  console.log(licenseType);
   const transcripts = rawVideoData.transcriptsFromSelected ? rawVideoData.transcriptsFromSelected
     : module.parseTranscripts({ transcriptsData: studioView });
 
@@ -272,7 +287,7 @@ export const importTranscript = () => (dispatch, getState) => {
   const state = getState();
   const { transcripts, videoSource } = state.video;
   // Remove the placeholder '' from the unset language from the list of transcripts.
-  const transcriptsPlaceholderRemoved = (transcripts === []) ? transcripts : removeItemOnce(transcripts, '');
+  const transcriptsPlaceholderRemoved = isEmpty(transcripts) ? transcripts : removeItemOnce(transcripts, '');
 
   dispatch(requests.importTranscript({
     youTubeId: parseYoutubeId(videoSource),
@@ -296,8 +311,7 @@ export const uploadTranscript = ({ language, file }) => (dispatch, getState) => 
   const state = getState();
   const { transcripts, videoId } = state.video;
   // Remove the placeholder '' from the unset language from the list of transcripts.
-  const transcriptsPlaceholderRemoved = (transcripts === []) ? transcripts : removeItemOnce(transcripts, '');
-
+  const transcriptsPlaceholderRemoved = isEmpty(transcripts) ? transcripts : removeItemOnce(transcripts, '');
   dispatch(requests.uploadTranscript({
     language,
     videoId,
@@ -370,6 +384,46 @@ export const replaceTranscript = ({ newFile, newFilename, language }) => (dispat
   }));
 };
 
+export const uploadVideo = ({ supportedFiles, setLoadSpinner, postUploadRedirect }) => (dispatch) => {
+  const data = { files: [] };
+  setLoadSpinner(true);
+  supportedFiles.forEach((file) => {
+    const fileData = file.get('file');
+    data.files.push({
+      file_name: fileData.name,
+      content_type: fileData.type,
+    });
+  });
+  dispatch(requests.uploadVideo({
+    data,
+    onSuccess: async (response) => {
+      const { files } = response.data;
+      await Promise.all(Object.values(files).map(async (fileObj) => {
+        const fileName = fileObj.file_name;
+        const edxVideoId = fileObj.edx_video_id;
+        const uploadUrl = fileObj.upload_url;
+        const uploadFile = supportedFiles.find((file) => file.get('file').name === fileName);
+        if (!uploadFile) {
+          console.error(`Could not find file object with name "${fileName}" in supportedFiles array.`);
+          return;
+        }
+        const formData = new FormData();
+        formData.append('uploaded-file', uploadFile.get('file'));
+        await fetch(uploadUrl, {
+          method: 'PUT',
+          body: formData,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+          .then(() => postUploadRedirect(edxVideoId))
+          .catch((error) => console.error('Error uploading file:', error));
+      }));
+      setLoadSpinner(false);
+    },
+  }));
+};
+
 export default {
   loadVideoData,
   determineVideoSources,
@@ -382,4 +436,5 @@ export default {
   updateTranscriptLanguage,
   replaceTranscript,
   uploadHandout,
+  uploadVideo,
 };
