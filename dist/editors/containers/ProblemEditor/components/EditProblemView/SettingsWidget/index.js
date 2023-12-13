@@ -61,6 +61,7 @@ const SettingsWidget = _ref => {
         })
       });
     }
+    // eslint-disable-next-line react/jsx-no-useless-fragment
     return /*#__PURE__*/(0, _jsxRuntime.jsx)(_jsxRuntime.Fragment, {});
   };
   return /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {

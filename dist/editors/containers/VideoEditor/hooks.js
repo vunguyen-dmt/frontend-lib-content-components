@@ -13,12 +13,14 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 const ErrorContext = /*#__PURE__*/(0, _react.createContext)();
 exports.ErrorContext = ErrorContext;
 const state = (0, _utils.StrictDict)({
+  /* eslint-disable react-hooks/rules-of-hooks */
   durationErrors: val => (0, _react.useState)(val),
   handoutErrors: val => (0, _react.useState)(val),
   licenseErrors: val => (0, _react.useState)(val),
   thumbnailErrors: val => (0, _react.useState)(val),
   transcriptsErrors: val => (0, _react.useState)(val),
   videoSourceErrors: val => (0, _react.useState)(val)
+  /* eslint-enable react-hooks/rules-of-hooks */
 });
 exports.state = state;
 const errorsHook = () => {

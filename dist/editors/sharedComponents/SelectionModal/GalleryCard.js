@@ -23,22 +23,16 @@ const GalleryCard = _ref => {
     asset
   } = _ref;
   return /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.SelectableBox, {
-    className: "card bg-white",
+    className: "card bg-white shadow-none border-0 py-0",
     type: "radio",
     value: asset.id,
-    style: {
-      padding: '10px 20px',
-      border: 'none',
-      boxShadow: 'none'
-    },
     children: /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-      className: "card-div d-flex flex-row flex-nowrap",
+      className: "card-div d-flex flex-row flex-nowrap align-items-center",
       children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
+        className: "position-relative",
         style: {
-          position: 'relative',
           width: '200px',
-          height: '100px',
-          margin: '18px 0 0 0'
+          height: '100px'
         },
         children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Image, {
           style: {
@@ -66,7 +60,7 @@ const GalleryCard = _ref => {
           children: (0, _utils.formatDuration)(asset.duration)
         })]
       }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-        className: "card-text p-3",
+        className: "card-text px-3 py-2",
         style: {
           marginTop: '10px'
         },
@@ -107,7 +101,7 @@ GalleryCard.propTypes = {
     displayName: _propTypes.default.string,
     externalUrl: _propTypes.default.string,
     id: _propTypes.default.string,
-    dateAdded: _propTypes.default.number,
+    dateAdded: _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.instanceOf(Date)]),
     locked: _propTypes.default.bool,
     portableUrl: _propTypes.default.string,
     thumbnail: _propTypes.default.string,
@@ -115,7 +109,7 @@ GalleryCard.propTypes = {
     duration: _propTypes.default.number,
     status: _propTypes.default.string,
     statusBadgeVariant: _propTypes.default.string,
-    transcripts: _propTypes.default.array
+    transcripts: _propTypes.default.arrayOf(_propTypes.default.string)
   }).isRequired
 };
 var _default = GalleryCard;

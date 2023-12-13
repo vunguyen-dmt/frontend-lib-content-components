@@ -43,7 +43,7 @@ const QuestionWidget = _ref => {
       id: "question",
       editorType: "question",
       editorRef: editorRef,
-      textValue: question,
+      editorContentHtml: question,
       setEditorRef: setEditorRef,
       minHeight: 150,
       placeholder: intl.formatMessage(_messages.default.placeholder)

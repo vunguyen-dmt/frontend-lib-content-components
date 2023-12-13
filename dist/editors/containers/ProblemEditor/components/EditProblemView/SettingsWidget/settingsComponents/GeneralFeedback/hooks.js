@@ -12,6 +12,7 @@ function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "functio
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 const state = {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   summary: val => (0, _react.useState)(val)
 };
 exports.state = state;
@@ -21,6 +22,8 @@ const generalFeedbackHooks = (generalFeedback, updateSettings) => {
     values: {},
     intl: true
   });
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   (0, _react.useEffect)(() => {
     if (_lodashEs.default.isEmpty(generalFeedback)) {
       setSummary({

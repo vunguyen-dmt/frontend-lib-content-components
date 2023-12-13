@@ -27,15 +27,14 @@ const sortMessages = (0, _utils.StrictDict)({
 });
 exports.sortMessages = sortMessages;
 const filterKeys = (0, _utils.StrictDict)({
-  videoStatus: 'videoStatus',
-  uploading: 'uploading',
-  processing: 'processing',
-  ready: 'ready',
-  failed: 'failed'
+  uploading: 'Uploading',
+  processing: 'In Progress',
+  ready: 'Ready',
+  failed: 'Failed'
 });
 exports.filterKeys = filterKeys;
 const filterMessages = (0, _utils.StrictDict)({
-  videoStatus: _messages.default[messageKeys.filterByVideoStatusNone],
+  title: _messages.default[messageKeys.filterByVideoStatusNone],
   uploading: _messages.default[messageKeys.filterByVideoStatusUploading],
   processing: _messages.default[messageKeys.filterByVideoStatusProcessing],
   ready: _messages.default[messageKeys.filterByVideoStatusReady],

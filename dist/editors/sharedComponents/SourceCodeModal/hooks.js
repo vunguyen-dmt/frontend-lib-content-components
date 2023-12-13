@@ -30,6 +30,7 @@ const prepareSourceCodeModal = _ref2 => {
     editorRef,
     close
   } = _ref2;
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const ref = (0, _react.useRef)();
   const saveBtnProps = _module.getSaveBtnProps({
     editorRef,

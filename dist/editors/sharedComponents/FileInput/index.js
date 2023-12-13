@@ -12,6 +12,7 @@ const fileInput = _ref => {
   let {
     onAddFile
   } = _ref;
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const ref = _react.default.useRef();
   const click = () => ref.current.click();
   const addFile = e => {

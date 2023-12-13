@@ -29,10 +29,11 @@ function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typ
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); } // import VideoPreview from './components/VideoPreview';
 const VideoSettingsModal = _ref => {
   let {
-    onReturn
+    onReturn,
+    isLibrary
   } = _ref;
   return /*#__PURE__*/(0, _jsxRuntime.jsxs)(_jsxRuntime.Fragment, {
-    children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)(_paragon.Button, {
+    children: [!isLibrary && /*#__PURE__*/(0, _jsxRuntime.jsxs)(_paragon.Button, {
       variant: "link",
       className: "text-primary-500",
       size: "sm",
@@ -47,14 +48,14 @@ const VideoSettingsModal = _ref => {
           height: '13px'
         }
       }), /*#__PURE__*/(0, _jsxRuntime.jsx)(_i18n.FormattedMessage, _objectSpread({}, _messages.default.replaceVideoButtonLabel))]
-    }), /*#__PURE__*/(0, _jsxRuntime.jsx)(_ErrorSummary.default, {}), /*#__PURE__*/(0, _jsxRuntime.jsx)(_VideoPreviewWidget.default, {}), /*#__PURE__*/(0, _jsxRuntime.jsx)(_VideoSourceWidget.default, {}), /*#__PURE__*/(0, _jsxRuntime.jsx)(_SocialShareWidget.default, {}), /*#__PURE__*/(0, _jsxRuntime.jsx)(_ThumbnailWidget.default, {}), /*#__PURE__*/(0, _jsxRuntime.jsx)(_TranscriptWidget.default, {}), /*#__PURE__*/(0, _jsxRuntime.jsx)(_DurationWidget.default, {}), /*#__PURE__*/(0, _jsxRuntime.jsx)(_HandoutWidget.default, {}), /*#__PURE__*/(0, _jsxRuntime.jsx)(_LicenseWidget.default, {})]
+    }), /*#__PURE__*/(0, _jsxRuntime.jsx)(_ErrorSummary.default, {}), /*#__PURE__*/(0, _jsxRuntime.jsx)(_VideoPreviewWidget.default, {}), /*#__PURE__*/(0, _jsxRuntime.jsx)(_VideoSourceWidget.default, {}), !isLibrary && /*#__PURE__*/(0, _jsxRuntime.jsx)(_SocialShareWidget.default, {}), /*#__PURE__*/(0, _jsxRuntime.jsx)(_ThumbnailWidget.default, {}), /*#__PURE__*/(0, _jsxRuntime.jsx)(_TranscriptWidget.default, {}), /*#__PURE__*/(0, _jsxRuntime.jsx)(_DurationWidget.default, {}), /*#__PURE__*/(0, _jsxRuntime.jsx)(_HandoutWidget.default, {}), /*#__PURE__*/(0, _jsxRuntime.jsx)(_LicenseWidget.default, {})]
   });
 };
 exports.VideoSettingsModal = VideoSettingsModal;
 VideoSettingsModal.propTypes = {
-  showReturn: _propTypes.default.bool.isRequired,
-  onReturn: _propTypes.default.func.isRequired
+  onReturn: _propTypes.default.func.isRequired,
+  isLibrary: _propTypes.default.func.isRequired
 };
-var _default = VideoSettingsModal;
+var _default = (0, _i18n.injectIntl)(VideoSettingsModal);
 exports.default = _default;
 //# sourceMappingURL=index.js.map

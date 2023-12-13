@@ -18,6 +18,7 @@ function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key i
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 const state = (0, _utils.StrictDict)({
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   isSaveWarningModalOpen: val => (0, _react.useState)(val)
 });
 exports.state = state;
@@ -188,7 +189,6 @@ const checkForSettingDiscrepancy = _ref5 => {
   const problemSettings = reactSettingsParser.getSettings();
   const rawOlxSettings = reactSettingsParser.parseRawOlxSettings();
   let isMismatched = false;
-  // console.log(rawOlxSettings);
   Object.entries(rawOlxSettings).forEach(_ref6 => {
     let [key, value] = _ref6;
     if (value !== problemSettings[key]) {

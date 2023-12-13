@@ -58,7 +58,9 @@ const CodeEditor = _ref => {
 };
 exports.CodeEditor = CodeEditor;
 CodeEditor.propTypes = {
-  innerRef: _propTypes.default.oneOfType([_propTypes.default.func, _propTypes.default.shape({
+  innerRef: _propTypes.default.oneOfType([_propTypes.default.func,
+  // eslint-disable-next-line react/forbid-prop-types
+  _propTypes.default.shape({
     current: _propTypes.default.any
   })]).isRequired,
   value: _propTypes.default.string.isRequired,

@@ -29,7 +29,8 @@ const ScoringCard = _ref => {
     intl,
     // redux
     studioEndpointUrl,
-    learningContextId
+    learningContextId,
+    isLibrary
   } = _ref;
   const {
     handleUnlimitedChange,
@@ -82,7 +83,7 @@ const ScoringCard = _ref => {
           children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_i18n.FormattedMessage, _objectSpread({}, _messages.default.unlimitedAttemptsCheckboxLabel))
         })
       })]
-    }), /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Hyperlink, {
+    }), !isLibrary && /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Hyperlink, {
       destination: `${studioEndpointUrl}/settings/advanced/${learningContextId}#max_attempts`,
       target: "_blank",
       children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_i18n.FormattedMessage, _objectSpread({}, _messages.default.advancedSettingsLinkText))
@@ -95,14 +96,20 @@ ScoringCard.propTypes = {
   // eslint-disable-next-line
   scoring: _propTypes.default.any.isRequired,
   updateSettings: _propTypes.default.func.isRequired,
-  defaultValue: _propTypes.default.number.isRequired,
+  defaultValue: _propTypes.default.number,
   // redux
   studioEndpointUrl: _propTypes.default.string.isRequired,
-  learningContextId: _propTypes.default.string.isRequired
+  learningContextId: _propTypes.default.string,
+  isLibrary: _propTypes.default.bool.isRequired
+};
+ScoringCard.defaultProps = {
+  learningContextId: null,
+  defaultValue: null
 };
 const mapStateToProps = state => ({
   studioEndpointUrl: _redux.selectors.app.studioEndpointUrl(state),
-  learningContextId: _redux.selectors.app.learningContextId(state)
+  learningContextId: _redux.selectors.app.learningContextId(state),
+  isLibrary: _redux.selectors.app.isLibrary(state)
 });
 exports.mapStateToProps = mapStateToProps;
 const mapDispatchToProps = {};

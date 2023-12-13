@@ -24,10 +24,15 @@ function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key i
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 const state = {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   showAdvanced: val => (0, _react.useState)(val),
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   cardCollapsed: val => (0, _react.useState)(val),
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   summary: val => (0, _react.useState)(val),
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   showAttempts: val => (0, _react.useState)(val),
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   attemptDisplayValue: val => (0, _react.useState)(val)
 };
 exports.state = state;
@@ -58,6 +63,8 @@ const hintsCardHooks = (hints, updateSettings) => {
     message: _messages.default.noHintSummary,
     values: {}
   });
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   (0, _react.useEffect)(() => {
     const hintsNumber = hints.length;
     if (hintsNumber === 0) {

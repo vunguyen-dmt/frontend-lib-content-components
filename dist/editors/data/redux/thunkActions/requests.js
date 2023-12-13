@@ -27,7 +27,8 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); } /* eslint-disable import/no-cycle */
+function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _objectDestructuringEmpty(obj) { if (obj == null) throw new TypeError("Cannot destructure " + obj); } /* eslint-disable import/no-cycle */
 /**
  * Wrapper around a network request promise, that sends actions to the redux store to
  * track the state of that promise.
@@ -76,7 +77,7 @@ const networkRequest = _ref => {
  */
 exports.networkRequest = networkRequest;
 const fetchBlock = _ref2 => {
-  let rest = Object.assign({}, _ref2);
+  let rest = Object.assign({}, (_objectDestructuringEmpty(_ref2), _ref2));
   return (dispatch, getState) => {
     dispatch(_module.networkRequest(_objectSpread({
       requestKey: _requests.RequestKeys.fetchBlock,
@@ -97,7 +98,7 @@ const fetchBlock = _ref2 => {
  */
 exports.fetchBlock = fetchBlock;
 const fetchStudioView = _ref3 => {
-  let rest = Object.assign({}, _ref3);
+  let rest = Object.assign({}, (_objectDestructuringEmpty(_ref3), _ref3));
   return (dispatch, getState) => {
     dispatch(_module.networkRequest(_objectSpread({
       requestKey: _requests.RequestKeys.fetchStudioView,
@@ -117,7 +118,7 @@ const fetchStudioView = _ref3 => {
  */
 exports.fetchStudioView = fetchStudioView;
 const fetchUnit = _ref4 => {
-  let rest = Object.assign({}, _ref4);
+  let rest = Object.assign({}, (_objectDestructuringEmpty(_ref4), _ref4));
   return (dispatch, getState) => {
     dispatch(_module.networkRequest(_objectSpread({
       requestKey: _requests.RequestKeys.fetchUnit,
@@ -174,7 +175,7 @@ const uploadAsset = _ref6 => {
 };
 exports.uploadAsset = uploadAsset;
 const fetchAssets = _ref7 => {
-  let rest = Object.assign({}, _ref7);
+  let rest = Object.assign({}, (_objectDestructuringEmpty(_ref7), _ref7));
   return (dispatch, getState) => {
     dispatch(_module.networkRequest(_objectSpread({
       requestKey: _requests.RequestKeys.fetchAssets,
@@ -187,7 +188,7 @@ const fetchAssets = _ref7 => {
 };
 exports.fetchAssets = fetchAssets;
 const fetchVideos = _ref8 => {
-  let rest = Object.assign({}, _ref8);
+  let rest = Object.assign({}, (_objectDestructuringEmpty(_ref8), _ref8));
   return (dispatch, getState) => {
     dispatch(_module.networkRequest(_objectSpread({
       requestKey: _requests.RequestKeys.fetchVideos,
@@ -200,7 +201,7 @@ const fetchVideos = _ref8 => {
 };
 exports.fetchVideos = fetchVideos;
 const allowThumbnailUpload = _ref9 => {
-  let rest = Object.assign({}, _ref9);
+  let rest = Object.assign({}, (_objectDestructuringEmpty(_ref9), _ref9));
   return (dispatch, getState) => {
     dispatch(_module.networkRequest(_objectSpread({
       requestKey: _requests.RequestKeys.allowThumbnailUpload,
@@ -349,7 +350,7 @@ const getTranscriptFile = _ref16 => {
 };
 exports.getTranscriptFile = getTranscriptFile;
 const fetchCourseDetails = _ref17 => {
-  let rest = Object.assign({}, _ref17);
+  let rest = Object.assign({}, (_objectDestructuringEmpty(_ref17), _ref17));
   return (dispatch, getState) => {
     dispatch(_module.networkRequest(_objectSpread({
       requestKey: _requests.RequestKeys.fetchCourseDetails,
@@ -362,7 +363,7 @@ const fetchCourseDetails = _ref17 => {
 };
 exports.fetchCourseDetails = fetchCourseDetails;
 const fetchAdvancedSettings = _ref18 => {
-  let rest = Object.assign({}, _ref18);
+  let rest = Object.assign({}, (_objectDestructuringEmpty(_ref18), _ref18));
   return (dispatch, getState) => {
     dispatch(_module.networkRequest(_objectSpread({
       requestKey: _requests.RequestKeys.fetchAdvancedSettings,
@@ -375,13 +376,12 @@ const fetchAdvancedSettings = _ref18 => {
 };
 exports.fetchAdvancedSettings = fetchAdvancedSettings;
 const fetchVideoFeatures = _ref19 => {
-  let rest = Object.assign({}, _ref19);
+  let rest = Object.assign({}, (_objectDestructuringEmpty(_ref19), _ref19));
   return (dispatch, getState) => {
     dispatch(_module.networkRequest(_objectSpread({
       requestKey: _requests.RequestKeys.fetchVideoFeatures,
       promise: _api.default.fetchVideoFeatures({
-        studioEndpointUrl: _.selectors.app.studioEndpointUrl(getState()),
-        learningContextId: _.selectors.app.learningContextId(getState())
+        studioEndpointUrl: _.selectors.app.studioEndpointUrl(getState())
       })
     }, rest)));
   };

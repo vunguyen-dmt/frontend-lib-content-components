@@ -19,6 +19,7 @@ function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typ
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 const hooks = {
   state: {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     isDismissed: val => _react.default.useState(val)
   },
   dismissalHooks: _ref => {
@@ -27,6 +28,7 @@ const hooks = {
       isError
     } = _ref;
     const [isDismissed, setIsDismissed] = hooks.state.isDismissed(false);
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     _react.default.useEffect(() => {
       setIsDismissed(isDismissed && !isError);
     }, [isError]);

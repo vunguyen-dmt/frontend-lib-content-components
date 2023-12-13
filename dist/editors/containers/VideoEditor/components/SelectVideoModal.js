@@ -20,7 +20,9 @@ const hooks = {
     let {
       fetchVideos
     } = _ref;
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [videos, setVideos] = _react.default.useState(null);
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     _react.default.useEffect(() => {
       fetchVideos({
         onSuccess: setVideos

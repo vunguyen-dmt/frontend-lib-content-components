@@ -24,6 +24,7 @@ function _toPrimitive(input, hint) { if (typeof input !== "object" || input === 
 const ProblemEditor = _ref => {
   let {
     onClose,
+    returnFunction,
     // Redux
     problemType,
     blockFinished,
@@ -57,19 +58,22 @@ const ProblemEditor = _ref => {
   }
   if (problemType === null) {
     return /*#__PURE__*/(0, _jsxRuntime.jsx)(_SelectTypeModal.default, {
-      onClose: onClose
+      onClose
     });
   }
   return /*#__PURE__*/(0, _jsxRuntime.jsx)(_EditProblemView.default, {
-    onClose: onClose
+    onClose,
+    returnFunction
   });
 };
 exports.ProblemEditor = ProblemEditor;
 ProblemEditor.defaultProps = {
-  assetsFinished: null
+  assetsFinished: null,
+  returnFunction: null
 };
 ProblemEditor.propTypes = {
   onClose: _propTypes.default.func.isRequired,
+  returnFunction: _propTypes.default.func,
   // redux
   assetsFinished: _propTypes.default.bool,
   advancedSettingsFinished: _propTypes.default.bool.isRequired,
@@ -78,7 +82,7 @@ ProblemEditor.propTypes = {
   studioViewFinished: _propTypes.default.bool.isRequired,
   problemType: _propTypes.default.string.isRequired,
   initializeProblemEditor: _propTypes.default.func.isRequired,
-  blockValue: _propTypes.default.objectOf(_propTypes.default.object).isRequired
+  blockValue: _propTypes.default.objectOf(_propTypes.default.shape({})).isRequired
 };
 const mapStateToProps = state => ({
   blockFinished: _redux.selectors.requests.isFinished(state, {

@@ -29,6 +29,7 @@ function _toPrimitive(input, hint) { if (typeof input !== "object" || input === 
 const TextEditor = _ref => {
   let {
     onClose,
+    returnFunction,
     // redux
     isRaw,
     blockValue,
@@ -57,7 +58,7 @@ const TextEditor = _ref => {
     return /*#__PURE__*/(0, _jsxRuntime.jsx)(_TinyMceWidget.default, {
       editorType: "text",
       editorRef: editorRef,
-      textValue: blockValue ? blockValue.data.data : '',
+      editorContentHtml: blockValue ? blockValue.data.data : '',
       setEditorRef: setEditorRef,
       minHeight: 500,
       height: "100%",
@@ -71,6 +72,7 @@ const TextEditor = _ref => {
       assets
     }),
     onClose: onClose,
+    returnFunction: returnFunction,
     children: /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
       className: "editor-body h-75 overflow-auto",
       children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Toast, {
@@ -93,10 +95,12 @@ TextEditor.defaultProps = {
   blockValue: null,
   isRaw: null,
   assetsFinished: null,
-  assets: null
+  assets: null,
+  returnFunction: null
 };
 TextEditor.propTypes = {
   onClose: _propTypes.default.func.isRequired,
+  returnFunction: _propTypes.default.func,
   // redux
   blockValue: _propTypes.default.shape({
     data: _propTypes.default.shape({

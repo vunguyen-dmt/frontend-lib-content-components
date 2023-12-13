@@ -27,6 +27,7 @@ const ResetCard = _ref => {
     // inject
     intl
   } = _ref;
+  const isLibrary = (0, _reactRedux.useSelector)(_redux.selectors.app.isLibrary);
   const {
     setResetTrue,
     setResetFalse
@@ -41,7 +42,7 @@ const ResetCard = _ref => {
       children: /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
         children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_i18n.FormattedMessage, _objectSpread({}, _messages.default.resetSettingText))
       })
-    }), /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
+    }), !isLibrary && /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
       className: "spacedMessage",
       children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Hyperlink, {
         destination: advancedSettingsLink,

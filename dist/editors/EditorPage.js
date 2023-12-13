@@ -19,7 +19,8 @@ const EditorPage = _ref => {
     blockId,
     lmsEndpointUrl,
     studioEndpointUrl,
-    onClose
+    onClose,
+    returnFunction
   } = _ref;
   return /*#__PURE__*/(0, _jsxRuntime.jsx)(_reactRedux.Provider, {
     store: _store.default,
@@ -32,7 +33,8 @@ const EditorPage = _ref => {
         blockType,
         blockId,
         lmsEndpointUrl,
-        studioEndpointUrl
+        studioEndpointUrl,
+        returnFunction
       })
     })
   });
@@ -43,6 +45,7 @@ EditorPage.defaultProps = {
   courseId: null,
   lmsEndpointUrl: null,
   onClose: null,
+  returnFunction: null,
   studioEndpointUrl: null
 };
 EditorPage.propTypes = {
@@ -51,6 +54,7 @@ EditorPage.propTypes = {
   courseId: _propTypes.default.string,
   lmsEndpointUrl: _propTypes.default.string,
   onClose: _propTypes.default.func,
+  returnFunction: _propTypes.default.func,
   studioEndpointUrl: _propTypes.default.string
 };
 var _default = EditorPage;

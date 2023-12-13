@@ -13,6 +13,7 @@ var _redux = require("../../../../../../data/redux");
 var _messages = _interopRequireDefault(require("../ThumbnailWidget/messages"));
 var _hooks = _interopRequireDefault(require("./hooks"));
 var _LanguageNamesWidget = _interopRequireDefault(require("./LanguageNamesWidget"));
+var _videoThumbnail = _interopRequireDefault(require("../../../../../../data/images/videoThumbnail.svg"));
 var _jsxRuntime = require("react/jsx-runtime");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 const VideoPreviewWidget = _ref => {
@@ -25,6 +26,7 @@ const VideoPreviewWidget = _ref => {
   } = _ref;
   const imgRef = _react.default.useRef();
   const videoType = intl.formatMessage(_hooks.default.getVideoType(videoSource));
+  const thumbnailImage = thumbnail || _videoThumbnail.default;
   return /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Collapsible.Advanced, {
     className: "collapsible-card rounded mx-4 my-3 px-4",
     defaultOpen: true,
@@ -35,9 +37,9 @@ const VideoPreviewWidget = _ref => {
         className: "d-flex flex-row",
         children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Image, {
           thumbnail: true,
-          className: "mr-3",
+          className: "mr-3 p-4",
           ref: imgRef,
-          src: thumbnail,
+          src: thumbnailImage,
           alt: intl.formatMessage(_messages.default.thumbnailAltText),
           style: {
             maxWidth: '200px',

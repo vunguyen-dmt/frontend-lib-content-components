@@ -30,6 +30,7 @@ const EditorContainer = _ref => {
     getContent,
     onClose,
     validateEntry,
+    returnFunction,
     // injected
     intl
   } = _ref;
@@ -41,7 +42,8 @@ const EditorContainer = _ref => {
     closeCancelConfirmModal
   } = hooks.cancelConfirmModalToggle();
   const handleCancel = hooks.handleCancel({
-    onClose
+    onClose,
+    returnFunction
   });
   return /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
     className: "position-relative zindex-0",
@@ -49,7 +51,12 @@ const EditorContainer = _ref => {
       size: "md",
       confirmAction: /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Button, {
         variant: "primary",
-        onClick: handleCancel,
+        onClick: () => {
+          handleCancel();
+          if (returnFunction) {
+            closeCancelConfirmModal();
+          }
+        },
         children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_i18n.FormattedMessage, _objectSpread({}, _messages.default.okButtonLabel))
       }),
       isOpen: isCancelConfirmOpen,
@@ -83,7 +90,8 @@ const EditorContainer = _ref => {
       onSave: hooks.handleSaveClicked({
         dispatch,
         getContent,
-        validateEntry
+        validateEntry,
+        returnFunction
       }),
       saveFailed: hooks.saveFailed()
     })]
@@ -92,12 +100,14 @@ const EditorContainer = _ref => {
 exports.EditorContainer = EditorContainer;
 EditorContainer.defaultProps = {
   onClose: null,
+  returnFunction: null,
   validateEntry: null
 };
 EditorContainer.propTypes = {
   children: _propTypes.default.node.isRequired,
   getContent: _propTypes.default.func.isRequired,
   onClose: _propTypes.default.func,
+  returnFunction: _propTypes.default.func,
   validateEntry: _propTypes.default.func,
   // injected
   intl: _i18n.intlShape.isRequired

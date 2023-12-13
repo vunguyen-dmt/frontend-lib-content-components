@@ -39,10 +39,9 @@ const SelectionModal = _ref => {
     modalMessages,
     isLoaded,
     isFetchError,
-    isUploadError,
-    // injected
-    intl
+    isUploadError
   } = _ref;
+  const intl = (0, _i18n.useIntl)();
   const {
     confirmMsg,
     uploadButtonMsg,
@@ -58,8 +57,7 @@ const SelectionModal = _ref => {
     showGallery = false;
   }
   const galleryPropsValues = _objectSpread({
-    isLoaded,
-    show: showGallery
+    isLoaded
   }, galleryProps);
   return /*#__PURE__*/(0, _jsxRuntime.jsxs)(_BaseModal.default, {
     close: close,
@@ -109,7 +107,7 @@ const SelectionModal = _ref => {
       children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_i18n.FormattedMessage, _objectSpread({}, galleryError.message))
     }), /*#__PURE__*/(0, _jsxRuntime.jsxs)(_paragon.Stack, {
       gap: 2,
-      children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_Gallery.default, _objectSpread({}, galleryPropsValues)), /*#__PURE__*/(0, _jsxRuntime.jsx)(_FileInput.default, {
+      children: [showGallery && /*#__PURE__*/(0, _jsxRuntime.jsx)(_Gallery.default, _objectSpread({}, galleryPropsValues)), /*#__PURE__*/(0, _jsxRuntime.jsx)(_FileInput.default, {
         fileInput: fileInput,
         acceptedFiles: Object.values(acceptedFiles).join()
       })]
@@ -154,10 +152,8 @@ SelectionModal.propTypes = {
   }).isRequired,
   isLoaded: _propTypes.default.bool.isRequired,
   isFetchError: _propTypes.default.bool.isRequired,
-  isUploadError: _propTypes.default.bool.isRequired,
-  // injected
-  intl: _i18n.intlShape.isRequired
+  isUploadError: _propTypes.default.bool.isRequired
 };
-var _default = (0, _i18n.injectIntl)(SelectionModal);
+var _default = SelectionModal;
 exports.default = _default;
 //# sourceMappingURL=index.js.map

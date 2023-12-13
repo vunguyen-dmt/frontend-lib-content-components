@@ -24,20 +24,32 @@ const returnUrl = _ref3 => {
   let {
     studioEndpointUrl,
     unitUrl,
-    learningContextId
+    learningContextId,
+    blockId
   } = _ref3;
-  if (learningContextId && learningContextId.includes('library-v1')) {
+  if (learningContextId && learningContextId.startsWith('library-v1')) {
     // when the learning context is a v1 library, return to the library page
     return libraryV1({
       studioEndpointUrl,
       learningContextId
     });
   }
+  if (learningContextId && learningContextId.startsWith('lib')) {
+    // when it's a v2 library, there will be no return url (instead a closed popup)
+    // (temporary) don't throw error, just return empty url. it will fail it's network connection but otherwise
+    // the app will run
+    // throw new Error('Return url not available (or needed) for V2 libraries');
+    return '';
+  }
   // when the learning context is a course, return to the unit page
-  return unitUrl ? unit({
-    studioEndpointUrl,
-    unitUrl
-  }) : '';
+  // only do this for v1 blocks
+  if (unitUrl && blockId.includes('block-v1')) {
+    return unit({
+      studioEndpointUrl,
+      unitUrl
+    });
+  }
+  return '';
 };
 exports.returnUrl = returnUrl;
 const block = _ref4 => {
@@ -45,7 +57,7 @@ const block = _ref4 => {
     studioEndpointUrl,
     blockId
   } = _ref4;
-  return `${studioEndpointUrl}/xblock/${blockId}`;
+  return blockId.startsWith('lb:') ? `${studioEndpointUrl}/api/xblock/v2/xblocks/${blockId}/fields/` : `${studioEndpointUrl}/xblock/${blockId}`;
 };
 exports.block = block;
 const blockAncestor = _ref5 => {
@@ -53,10 +65,17 @@ const blockAncestor = _ref5 => {
     studioEndpointUrl,
     blockId
   } = _ref5;
-  return `${block({
-    studioEndpointUrl,
-    blockId
-  })}?fields=ancestorInfo`;
+  if (blockId.includes('block-v1')) {
+    return `${block({
+      studioEndpointUrl,
+      blockId
+    })}?fields=ancestorInfo`;
+  }
+  // this url only need to get info to build the return url, which isn't used by V2 blocks
+  // (temporary) don't throw error, just return empty url. it will fail it's network connection but otherwise
+  // the app will run
+  // throw new Error('Block ancestor not available (and not needed) for V2 blocks');
+  return '';
 };
 exports.blockAncestor = blockAncestor;
 const blockStudioView = _ref6 => {
@@ -64,10 +83,10 @@ const blockStudioView = _ref6 => {
     studioEndpointUrl,
     blockId
   } = _ref6;
-  return `${block({
+  return blockId.includes('block-v1') ? `${block({
     studioEndpointUrl,
     blockId
-  })}/studio_view`;
+  })}/studio_view` : `${studioEndpointUrl}/api/xblock/v2/xblocks/${blockId}/view/studio_view/`;
 };
 exports.blockStudioView = blockStudioView;
 const courseAssets = _ref7 => {
@@ -160,10 +179,9 @@ const courseAdvanceSettings = _ref16 => {
 exports.courseAdvanceSettings = courseAdvanceSettings;
 const videoFeatures = _ref17 => {
   let {
-    studioEndpointUrl,
-    learningContextId
+    studioEndpointUrl
   } = _ref17;
-  return `${studioEndpointUrl}/video_features/${learningContextId}`;
+  return `${studioEndpointUrl}/video_features/`;
 };
 exports.videoFeatures = videoFeatures;
 const courseVideos = _ref18 => {

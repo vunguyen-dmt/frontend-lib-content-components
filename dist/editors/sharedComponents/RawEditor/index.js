@@ -44,7 +44,9 @@ RawEditor.defaultProps = {
   lang: 'html'
 };
 RawEditor.propTypes = {
-  editorRef: _propTypes.default.oneOfType([_propTypes.default.func, _propTypes.default.shape({
+  editorRef: _propTypes.default.oneOfType([_propTypes.default.func,
+  // eslint-disable-next-line react/forbid-prop-types
+  _propTypes.default.shape({
     current: _propTypes.default.any
   })]),
   content: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.shape({

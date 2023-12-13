@@ -32,6 +32,7 @@ function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typ
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 const EditProblemView = _ref => {
   let {
+    returnFunction,
     // redux
     problemType,
     problemState,
@@ -59,6 +60,7 @@ const EditProblemView = _ref => {
       assets,
       lmsEndpointUrl
     }),
+    returnFunction: returnFunction,
     children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.AlertModal, {
       title: isAdvancedProblemType ? intl.formatMessage(_messages.default.olxSettingDiscrepancyTitle) : intl.formatMessage(_messages.default.noAnswerTitle),
       isOpen: isSaveWarningModalOpen,
@@ -77,6 +79,7 @@ const EditProblemView = _ref => {
               assets,
               lmsEndpointUrl
             })(),
+            returnFunction,
             destination: returnUrl,
             dispatch,
             analytics
@@ -118,10 +121,12 @@ const EditProblemView = _ref => {
 exports.EditProblemView = EditProblemView;
 EditProblemView.defaultProps = {
   assets: null,
-  lmsEndpointUrl: null
+  lmsEndpointUrl: null,
+  returnFunction: null
 };
 EditProblemView.propTypes = {
   problemType: _propTypes.default.string.isRequired,
+  returnFunction: _propTypes.default.func,
   // eslint-disable-next-line
   problemState: _propTypes.default.any.isRequired,
   assets: _propTypes.default.shape({}),

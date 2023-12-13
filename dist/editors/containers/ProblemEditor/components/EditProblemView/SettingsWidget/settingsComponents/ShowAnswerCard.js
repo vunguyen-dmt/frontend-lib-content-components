@@ -30,7 +30,8 @@ const ShowAnswerCard = _ref => {
     intl,
     // redux
     studioEndpointUrl,
-    learningContextId
+    learningContextId,
+    isLibrary
   } = _ref;
   const {
     handleShowAnswerChange,
@@ -43,7 +44,7 @@ const ShowAnswerCard = _ref => {
       children: /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
         children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_i18n.FormattedMessage, _objectSpread({}, _messages.default.showAnswerSettingText))
       })
-    }), /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
+    }), !isLibrary && /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
       className: "pb-4",
       children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Hyperlink, {
         destination: `${studioEndpointUrl}/settings/advanced/${learningContextId}#showanswer`,
@@ -93,15 +94,19 @@ ShowAnswerCard.propTypes = {
   solutionExplanation: _propTypes.default.string,
   updateSettings: _propTypes.default.func.isRequired,
   studioEndpointUrl: _propTypes.default.string.isRequired,
-  learningContextId: _propTypes.default.string.isRequired,
-  defaultValue: _propTypes.default.string.isRequired
+  learningContextId: _propTypes.default.string,
+  isLibrary: _propTypes.default.bool.isRequired,
+  defaultValue: _propTypes.default.string
 };
 ShowAnswerCard.defaultProps = {
-  solutionExplanation: ''
+  solutionExplanation: '',
+  learningContextId: null,
+  defaultValue: 'finished'
 };
 const mapStateToProps = state => ({
   studioEndpointUrl: _redux.selectors.app.studioEndpointUrl(state),
-  learningContextId: _redux.selectors.app.learningContextId(state)
+  learningContextId: _redux.selectors.app.learningContextId(state),
+  isLibrary: _redux.selectors.app.isLibrary(state)
 });
 exports.mapStateToProps = mapStateToProps;
 const mapDispatchToProps = {};

@@ -25,7 +25,9 @@ const TitleHeader = _ref => {
   if (!isInitialized) {
     return intl.formatMessage(_messages.default.loading);
   }
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const dispatch = (0, _reactRedux.useDispatch)();
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const title = (0, _reactRedux.useSelector)(_redux.selectors.app.displayTitle);
   const {
     inputRef,

@@ -203,7 +203,6 @@ const getStyles = () => `@import url("https://fonts.googleapis.com/css2?family=O
   }
   .mce-content-body img {
       max-width: 100%;
-      height: auto;
   }
   .mce-content-body pre {
     margin: 1em 0;

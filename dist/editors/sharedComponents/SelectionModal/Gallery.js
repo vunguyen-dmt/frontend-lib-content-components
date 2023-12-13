@@ -19,7 +19,6 @@ function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typ
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 const Gallery = _ref => {
   let {
-    show,
     galleryIsEmpty,
     searchIsEmpty,
     displayList,
@@ -28,13 +27,9 @@ const Gallery = _ref => {
     emptyGalleryLabel,
     showIdsOnCards,
     height,
-    isLoaded,
-    // injected
-    intl
+    isLoaded
   } = _ref;
-  if (!show) {
-    return null;
-  }
+  const intl = (0, _i18n.useIntl)();
   if (!isLoaded) {
     return /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
       style: {
@@ -104,15 +99,13 @@ Gallery.propTypes = {
   isLoaded: _propTypes.default.bool.isRequired,
   galleryIsEmpty: _propTypes.default.bool.isRequired,
   searchIsEmpty: _propTypes.default.bool.isRequired,
-  displayList: _propTypes.default.arrayOf(_propTypes.default.object).isRequired,
+  displayList: _propTypes.default.arrayOf(_propTypes.default.shape({})).isRequired,
   highlighted: _propTypes.default.string,
   onHighlightChange: _propTypes.default.func.isRequired,
   emptyGalleryLabel: _propTypes.default.shape({}).isRequired,
   showIdsOnCards: _propTypes.default.bool,
-  height: _propTypes.default.string,
-  // injected
-  intl: _i18n.intlShape.isRequired
+  height: _propTypes.default.string
 };
-var _default = (0, _i18n.injectIntl)(Gallery);
+var _default = Gallery;
 exports.default = _default;
 //# sourceMappingURL=Gallery.js.map

@@ -36,7 +36,7 @@ const SelectImageModal = _ref => {
   } = _hooks.default.imgHooks({
     setSelection,
     clearSelection,
-    images
+    images: images.current
   });
   const modalMessages = {
     confirmMsg: _messages.default.nextButtonLabel,

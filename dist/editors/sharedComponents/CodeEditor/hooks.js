@@ -22,6 +22,7 @@ const CODEMIRROR_LANGUAGES = {
   XML: 'xml'
 };
 const state = {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   showBtnEscapeHTML: val => _react.default.useState(val)
 };
 exports.state = state;
@@ -79,6 +80,7 @@ const createCodeMirrorDomNode = _ref3 => {
     upstreamRef,
     lang
   } = _ref3;
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   (0, _react.useEffect)(() => {
     const languageExtension = lang === CODEMIRROR_LANGUAGES.HTML ? (0, _langHtml.html)() : (0, _langXml.xml)();
     const cleanText = cleanHTML({

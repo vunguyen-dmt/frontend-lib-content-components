@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ShowAnswerTypesKeys = exports.ShowAnswerTypes = exports.RichTextProblems = exports.RandomizationTypesKeys = exports.RandomizationTypes = exports.ProblemTypes = exports.ProblemTypeKeys = exports.AdvanceProblems = exports.AdvanceProblemKeys = void 0;
+exports.settingsOlxAttributes = exports.ShowAnswerTypesKeys = exports.ShowAnswerTypes = exports.RichTextProblems = exports.RandomizationTypesKeys = exports.RandomizationTypes = exports.ProblemTypes = exports.ProblemTypeKeys = exports.AdvanceProblems = exports.AdvanceProblemKeys = void 0;
 var _utils = require("../../utils");
 var _singleSelect = _interopRequireDefault(require("../images/singleSelect.png"));
 var _multiSelect = _interopRequireDefault(require("../images/multiSelect.png"));
@@ -93,7 +93,7 @@ const AdvanceProblemKeys = (0, _utils.StrictDict)({
 exports.AdvanceProblemKeys = AdvanceProblemKeys;
 const AdvanceProblems = (0, _utils.StrictDict)({
   [AdvanceProblemKeys.BLANK]: {
-    title: 'Blank advanced problem',
+    title: 'Blank problem',
     status: '',
     template: '<problem></problem>'
   },
@@ -223,4 +223,6 @@ const RandomizationTypes = (0, _utils.StrictDict)({
 exports.RandomizationTypes = RandomizationTypes;
 const RichTextProblems = [ProblemTypeKeys.SINGLESELECT, ProblemTypeKeys.MULTISELECT];
 exports.RichTextProblems = RichTextProblems;
+const settingsOlxAttributes = ['@_display_name', '@_weight', '@_max_atempts', '@_showanswer', '@_show_reset_button', '@_submission_wait_seconds', '@_attempts_before_showanswer_button'];
+exports.settingsOlxAttributes = settingsOlxAttributes;
 //# sourceMappingURL=problem.js.map

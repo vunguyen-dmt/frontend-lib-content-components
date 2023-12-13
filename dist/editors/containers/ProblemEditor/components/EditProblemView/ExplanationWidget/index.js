@@ -46,7 +46,7 @@ const ExplanationWidget = _ref => {
       id: "solution",
       editorType: "solution",
       editorRef: editorRef,
-      textValue: settings?.solutionExplanation,
+      editorContentHtml: settings?.solutionExplanation,
       setEditorRef: setEditorRef,
       minHeight: 150,
       placeholder: intl.formatMessage(_messages.default.placeholder)

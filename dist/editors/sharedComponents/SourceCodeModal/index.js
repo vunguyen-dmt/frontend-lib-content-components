@@ -60,7 +60,9 @@ exports.SourceCodeModal = SourceCodeModal;
 SourceCodeModal.propTypes = {
   isOpen: _propTypes.default.bool.isRequired,
   close: _propTypes.default.func.isRequired,
-  editorRef: _propTypes.default.oneOfType([_propTypes.default.func, _propTypes.default.shape({
+  editorRef: _propTypes.default.oneOfType([_propTypes.default.func,
+  // eslint-disable-next-line react/forbid-prop-types
+  _propTypes.default.shape({
     current: _propTypes.default.any
   })]).isRequired,
   // injected

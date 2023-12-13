@@ -35,6 +35,7 @@ const hooks = {
       isUploadError,
       isDeleteError
     } = _ref;
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [error, setError] = _react.default.useContext(_hooks.ErrorContext).transcripts;
     if (isUploadError) {
       setError(_objectSpread(_objectSpread({}, error), {}, {

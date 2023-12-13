@@ -27,7 +27,8 @@ const Editor = _ref => {
     blockId,
     lmsEndpointUrl,
     studioEndpointUrl,
-    onClose
+    onClose,
+    returnFunction
   } = _ref;
   const dispatch = (0, _reactRedux.useDispatch)();
   hooks.initializeApp({
@@ -48,7 +49,8 @@ const Editor = _ref => {
       role: "dialog",
       "aria-label": blockType,
       children: EditorComponent !== undefined ? /*#__PURE__*/(0, _jsxRuntime.jsx)(EditorComponent, {
-        onClose: onClose
+        onClose,
+        returnFunction
       }) : /*#__PURE__*/(0, _jsxRuntime.jsx)(_i18n.FormattedMessage, _objectSpread({}, _messages.default.couldNotFindEditor))
     })
   });
@@ -59,6 +61,7 @@ Editor.defaultProps = {
   learningContextId: null,
   lmsEndpointUrl: null,
   onClose: null,
+  returnFunction: null,
   studioEndpointUrl: null
 };
 Editor.propTypes = {
@@ -67,6 +70,7 @@ Editor.propTypes = {
   learningContextId: _propTypes.default.string,
   lmsEndpointUrl: _propTypes.default.string,
   onClose: _propTypes.default.func,
+  returnFunction: _propTypes.default.func,
   studioEndpointUrl: _propTypes.default.string
 };
 var _default = Editor;

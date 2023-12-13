@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.state = exports.onSaveClick = exports.onInputChange = exports.onCheckboxChange = exports.getValidDimensions = exports.findGcd = exports.dimensionLockHooks = exports.dimensionHooks = exports.dimKeys = exports.default = exports.checkFormValidation = exports.altTextHooks = void 0;
+exports.state = exports.reduceDimensions = exports.onSaveClick = exports.onInputChange = exports.onCheckboxChange = exports.getValidDimensions = exports.findGcd = exports.dimensionLockHooks = exports.dimensionHooks = exports.dimKeys = exports.default = exports.checkFormValidation = exports.altTextHooks = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _utils = require("../../../utils");
 var _module = _interopRequireWildcard(require("./hooks"));
@@ -17,15 +17,22 @@ function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typ
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 // Simple wrappers for useState to allow easy mocking for tests.
 const state = {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   altText: val => _react.default.useState(val),
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   dimensions: val => _react.default.useState(val),
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   showAltTextDismissibleError: val => _react.default.useState(val),
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   showAltTextSubmissionError: val => _react.default.useState(val),
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   isDecorative: val => _react.default.useState(val),
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   isLocked: val => _react.default.useState(val),
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   local: val => _react.default.useState(val),
-  lockDims: val => _react.default.useState(val),
-  lockInitialized: val => _react.default.useState(val)
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  lockAspectRatio: val => _react.default.useState(val)
 };
 exports.state = state;
 const dimKeys = (0, _utils.StrictDict)({
@@ -35,13 +42,19 @@ const dimKeys = (0, _utils.StrictDict)({
 
 /**
  * findGcd(numerator, denominator)
- * Find the greatest common denominator of a ratio or fraction.
+ * Find the greatest common denominator of a ratio or fraction, which may be 1.
  * @param {number} numerator - ratio numerator
  * @param {number} denominator - ratio denominator
  * @return {number} - ratio greatest common denominator
  */
 exports.dimKeys = dimKeys;
-const findGcd = (a, b) => b ? findGcd(b, a % b) : a;
+const findGcd = (a, b) => {
+  const gcd = b ? findGcd(b, a % b) : a;
+  if (gcd === 1 || [a, b].some(v => !Number.isInteger(v / gcd))) {
+    return 1;
+  }
+  return gcd;
+};
 exports.findGcd = findGcd;
 const checkEqual = (d1, d2) => d1.height === d2.height && d1.width === d2.width;
 
@@ -58,14 +71,16 @@ const getValidDimensions = _ref => {
     dimensions,
     local,
     isLocked,
-    lockDims
+    lockAspectRatio
   } = _ref;
+  // if lock is not active, just return new dimensions.
+  // If lock is active, but dimensions have not changed, also just return new dimensions.
   if (!isLocked || checkEqual(local, dimensions)) {
     return local;
   }
   const out = {};
-  let iter;
-  const isMin = dimensions.height === lockDims.height;
+
+  // changed key is value of local height if that has changed, otherwise width.
   const keys = local.height !== dimensions.height ? {
     changed: dimKeys.height,
     other: dimKeys.width
@@ -73,21 +88,20 @@ const getValidDimensions = _ref => {
     changed: dimKeys.width,
     other: dimKeys.height
   };
-  const direction = local[keys.changed] > dimensions[keys.changed] ? 1 : -1;
-
-  // don't move down if already at minimum size
-  if (direction < 0 && isMin) {
-    return dimensions;
-  }
-  // find closest valid iteration of the changed field
-  iter = Math.max(Math.round(local[keys.changed] / lockDims[keys.changed]), 1);
-  // if closest valid iteration is current iteration, move one iteration in the change direction
-  if (iter === dimensions[keys.changed] / lockDims[keys.changed]) {
-    iter += direction;
-  }
-  out[keys.changed] = Math.round(iter * lockDims[keys.changed]);
-  out[keys.other] = Math.round(out[keys.changed] * (lockDims[keys.other] / lockDims[keys.changed]));
+  out[keys.changed] = local[keys.changed];
+  out[keys.other] = Math.round(local[keys.changed] * lockAspectRatio[keys.other] / lockAspectRatio[keys.changed]);
   return out;
+};
+
+/**
+ * reduceDimensions(width, height)
+ * reduces both values by dividing by their greates common denominator (which can simply be 1).
+ * @return {Array} [width, height]
+ */
+exports.getValidDimensions = getValidDimensions;
+const reduceDimensions = (width, height) => {
+  const gcd = _module.findGcd(width, height);
+  return [width / gcd, height / gcd];
 };
 
 /**
@@ -98,34 +112,31 @@ const getValidDimensions = _ref => {
  * @return {obj} - dimension lock hooks
  *   {func} initializeLock - enable the lock mechanism
  *   {bool} isLocked - are dimensions locked?
- *   {obj} lockDims - image dimensions ({ height, width })
+ *   {obj} lockAspectRatio - image dimensions ({ height, width })
  *   {func} lock - lock the dimensions
  *   {func} unlock - unlock the dimensions
  */
-exports.getValidDimensions = getValidDimensions;
+exports.reduceDimensions = reduceDimensions;
 const dimensionLockHooks = () => {
-  const [lockDims, setLockDims] = _module.state.lockDims(null);
+  const [lockAspectRatio, setLockAspectRatio] = _module.state.lockAspectRatio(null);
   const [isLocked, setIsLocked] = _module.state.isLocked(true);
   const initializeLock = _ref2 => {
     let {
       width,
       height
     } = _ref2;
-    // find minimum viable increment
-    let gcd = _module.findGcd(width, height);
-    if ([width, height].some(v => !Number.isInteger(v / gcd))) {
-      gcd = 1;
-    }
-    setLockDims({
-      width: width / gcd,
-      height: height / gcd
+    // width and height are treated as a fraction and reduced.
+    const [w, h] = reduceDimensions(width, height);
+    setLockAspectRatio({
+      width: w,
+      height: h
     });
   };
   return {
     initializeLock,
     isLocked,
     lock: () => setIsLocked(true),
-    lockDims,
+    lockAspectRatio,
     unlock: () => setIsLocked(false)
   };
 };
@@ -182,11 +193,35 @@ const dimensionHooks = altTextHook => {
       width
     });
   };
+  const setHeight = height => {
+    if (height.match(/[0-9]+[%]{1}/)) {
+      const heightPercent = height.match(/[0-9]+[%]{1}/)[0];
+      setLocal(_objectSpread(_objectSpread({}, local), {}, {
+        height: heightPercent
+      }));
+    } else if (height.match(/[0-9]/)) {
+      setLocal(_objectSpread(_objectSpread({}, local), {}, {
+        height: parseInt(height, 10)
+      }));
+    }
+  };
+  const setWidth = width => {
+    if (width.match(/[0-9]+[%]{1}/)) {
+      const widthPercent = width.match(/[0-9]+[%]{1}/)[0];
+      setLocal(_objectSpread(_objectSpread({}, local), {}, {
+        width: widthPercent
+      }));
+    } else if (width.match(/[0-9]/)) {
+      setLocal(_objectSpread(_objectSpread({}, local), {}, {
+        width: parseInt(width, 10)
+      }));
+    }
+  };
   const {
     initializeLock,
     isLocked,
     lock,
-    lockDims,
+    lockAspectRatio,
     unlock
   } = _module.dimensionLockHooks({
     dimensions
@@ -201,41 +236,19 @@ const dimensionHooks = altTextHook => {
         width: img.naturalWidth
       };
       setAll(selection.height ? selection : imageDims);
-      initializeLock(imageDims);
+      initializeLock(selection.height ? selection : imageDims);
     },
     isLocked,
     lock,
     unlock,
     value: local,
-    setHeight: height => {
-      if (height.match(/[0-9]+[%]{1}/)) {
-        const heightPercent = height.match(/[0-9]+[%]{1}/)[0];
-        setLocal(_objectSpread(_objectSpread({}, local), {}, {
-          height: heightPercent
-        }));
-      } else if (height.match(/[0-9]/)) {
-        setLocal(_objectSpread(_objectSpread({}, local), {}, {
-          height: parseInt(height, 10)
-        }));
-      }
-    },
-    setWidth: width => {
-      if (width.match(/[0-9]+[%]{1}/)) {
-        const widthPercent = width.match(/[0-9]+[%]{1}/)[0];
-        setLocal(_objectSpread(_objectSpread({}, local), {}, {
-          width: widthPercent
-        }));
-      } else if (width.match(/[0-9]/)) {
-        setLocal(_objectSpread(_objectSpread({}, local), {}, {
-          width: parseInt(width, 10)
-        }));
-      }
-    },
+    setHeight,
+    setWidth,
     updateDimensions: () => setAll(_module.getValidDimensions({
       dimensions,
       local,
       isLocked,
-      lockDims
+      lockAspectRatio
     }))
   };
 };

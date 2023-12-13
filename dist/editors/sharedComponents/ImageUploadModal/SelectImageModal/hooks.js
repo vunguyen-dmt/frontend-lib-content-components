@@ -19,10 +19,15 @@ function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key i
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 const state = {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   highlighted: val => _react.default.useState(val),
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   showSelectImageError: val => _react.default.useState(val),
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   searchString: val => _react.default.useState(val),
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   sortBy: val => _react.default.useState(val),
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   showSizeError: val => _react.default.useState(val)
 };
 exports.state = state;
@@ -49,7 +54,7 @@ const filteredList = _ref => {
     let {
       displayName
     } = _ref2;
-    return displayName.toLowerCase().includes(searchString.toLowerCase());
+    return displayName?.toLowerCase().includes(searchString?.toLowerCase());
   });
 };
 exports.filteredList = filteredList;
@@ -134,7 +139,9 @@ const fileInputHooks = _ref6 => {
     clearSelection,
     imgList
   } = _ref6;
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const dispatch = (0, _reactRedux.useDispatch)();
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const ref = _react.default.useRef();
   const click = () => ref.current.click();
   const addFile = e => {

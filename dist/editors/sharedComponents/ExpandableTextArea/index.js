@@ -35,7 +35,7 @@ const ExpandableTextArea = _ref => {
     children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
       className: "expandable-mce error",
       children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_TinyMceWidget.default, _objectSpread({
-        textValue: value,
+        editorContentHtml: value,
         editorRef: editorRef,
         editorType: "expandable",
         setEditorRef: setEditorRef,

@@ -6,7 +6,7 @@ var _editorTestData = require("./mockData/editorTestData");
 var _ReactStateOLXParser = _interopRequireDefault(require("./ReactStateOLXParser"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 describe('Check React State OLXParser problem', () => {
-  test('Test checkbox with feedback and hints problem type', () => {
+  test('for checkbox with feedback and hints problem type', () => {
     const olxparser = new _OLXParser.OLXParser(_olxTestData.checkboxesOLXWithFeedbackAndHintsOLX.rawOLX);
     const problem = olxparser.getParsedOLXData();
     const stateParser = new _ReactStateOLXParser.default({
@@ -86,6 +86,20 @@ describe('Check React State OLXParser problem', () => {
       });
       const buildOLX = stateParser.buildOLX();
       expect(buildOLX.replace(/\s/g, '')).toEqual(_olxTestData.numberParseTestOLX.buildOLX.replace(/\s/g, ''));
+    });
+    test('correctly preserves whitespace inside pre tags', () => {
+      const stateParser = new _ReactStateOLXParser.default({
+        problem: {
+          problemType: 'optionresponse',
+          answers: []
+        },
+        editorObject: {
+          question: '<pre>  1  a<br />  2  b<br /></pre>',
+          hints: []
+        }
+      });
+      const buildOLX = stateParser.buildOLX();
+      expect(buildOLX).toEqual('<problem><optionresponse>\n<pre>  1  a<br/>  2  b<br/></pre><optioninput></optioninput></optionresponse>\n</problem>');
     });
   });
 });

@@ -11,7 +11,8 @@ const blockTypes = (0, _utils.StrictDict)({
   video: 'video',
   problem: 'problem',
   // ADDED_EDITORS GO BELOW
-  video_upload: 'video_upload'
+  video_upload: 'video_upload',
+  game: 'game'
 });
 exports.blockTypes = blockTypes;
 //# sourceMappingURL=app.js.map

@@ -37,10 +37,11 @@ const simpleSelectors = {
   videos: mkSimpleSelector(app => app.videos)
 };
 exports.simpleSelectors = simpleSelectors;
-const returnUrl = (0, _reselect.createSelector)([_module.simpleSelectors.unitUrl, _module.simpleSelectors.studioEndpointUrl, _module.simpleSelectors.learningContextId], (unitUrl, studioEndpointUrl, learningContextId) => urls.returnUrl({
+const returnUrl = (0, _reselect.createSelector)([_module.simpleSelectors.unitUrl, _module.simpleSelectors.studioEndpointUrl, _module.simpleSelectors.learningContextId, _module.simpleSelectors.blockId], (unitUrl, studioEndpointUrl, learningContextId, blockId) => urls.returnUrl({
   studioEndpointUrl,
   unitUrl,
-  learningContextId
+  learningContextId,
+  blockId
 }));
 exports.returnUrl = returnUrl;
 const isInitialized = (0, _reselect.createSelector)([_module.simpleSelectors.unitUrl, _module.simpleSelectors.blockValue], (unitUrl, blockValue) => !!(unitUrl && blockValue));
@@ -62,20 +63,27 @@ const analytics = (0, _reselect.createSelector)([_module.simpleSelectors.blockId
 }));
 exports.analytics = analytics;
 const isRaw = (0, _reselect.createSelector)([_module.simpleSelectors.studioView], studioView => {
-  if (!studioView || !studioView.data || !studioView.data.html) {
+  if (!studioView?.data) {
     return null;
   }
-  if (studioView.data.html.includes('data-editor="raw"')) {
+  const {
+    html,
+    content
+  } = studioView.data;
+  if (html && html.includes('data-editor="raw"')) {
+    return true;
+  }
+  if (content && content.includes('data-editor="raw"')) {
     return true;
   }
   return false;
 });
 exports.isRaw = isRaw;
-const isLibrary = (0, _reselect.createSelector)([_module.simpleSelectors.learningContextId], learningContextId => {
-  if (!learningContextId) {
-    return null;
-  }
+const isLibrary = (0, _reselect.createSelector)([_module.simpleSelectors.learningContextId, _module.simpleSelectors.blockId], (learningContextId, blockId) => {
   if (learningContextId && learningContextId.startsWith('library-v1')) {
+    return true;
+  }
+  if (blockId && blockId.startsWith('lb:')) {
     return true;
   }
   return false;

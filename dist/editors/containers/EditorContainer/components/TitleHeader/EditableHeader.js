@@ -43,7 +43,9 @@ EditableHeader.defaultProps = {
   inputRef: null
 };
 EditableHeader.propTypes = {
-  inputRef: _propTypes.default.oneOfType([_propTypes.default.func, _propTypes.default.shape({
+  inputRef: _propTypes.default.oneOfType([_propTypes.default.func,
+  // eslint-disable-next-line react/forbid-prop-types
+  _propTypes.default.shape({
     current: _propTypes.default.any
   })]),
   handleChange: _propTypes.default.func.isRequired,

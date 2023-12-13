@@ -3,8 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.uploadVideo = exports.onUrlUploaded = exports.onFileUploaded = exports.navigateTo = exports.default = void 0;
-var requests = _interopRequireWildcard(require("../../data/redux/thunkActions/requests"));
+exports.useUploadVideo = exports.postUploadRedirect = exports.onVideoUpload = exports.navigateTo = exports.default = void 0;
 var _module = _interopRequireWildcard(require("./hooks"));
 var _redux = require("../../data/redux");
 var _store = _interopRequireDefault(require("../../data/store"));
@@ -16,66 +15,35 @@ const {
   navigateTo
 } = appHooks;
 exports.navigateTo = navigateTo;
-const uploadVideo = async _ref => {
-  let {
-    dispatch,
-    supportedFiles
-  } = _ref;
-  const data = {
-    files: []
-  };
-  supportedFiles.forEach(file => {
-    data.files.push({
-      file_name: file.name,
-      content_type: file.type
-    });
-  });
-  const onFileUploadedHook = _module.onFileUploaded();
-  dispatch(await requests.uploadVideo({
-    data,
-    onSuccess: async response => {
-      const {
-        files
-      } = response.data;
-      await Promise.all(Object.values(files).map(async fileObj => {
-        const fileName = fileObj.file_name;
-        const edxVideoId = fileObj.edx_video_id;
-        const uploadUrl = fileObj.upload_url;
-        const uploadFile = supportedFiles.find(file => file.name === fileName);
-        if (!uploadFile) {
-          console.error(`Could not find file object with name "${fileName}" in supportedFiles array.`);
-          return;
-        }
-        const formData = new FormData();
-        formData.append('uploaded-file', uploadFile);
-        await fetch(uploadUrl, {
-          method: 'PUT',
-          body: formData,
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }).then(() => onFileUploadedHook(edxVideoId)).catch(error => console.error('Error uploading file:', error));
-      }));
-    }
-  }));
-};
-exports.uploadVideo = uploadVideo;
-const onFileUploaded = () => {
-  const state = _store.default.getState();
-  const learningContextId = _redux.selectors.app.learningContextId(state);
-  const blockId = _redux.selectors.app.blockId(state);
-  return edxVideoId => navigateTo(`/course/${learningContextId}/editor/video/${blockId}?selectedVideoId=${edxVideoId}`);
-};
-exports.onFileUploaded = onFileUploaded;
-const onUrlUploaded = () => {
-  const state = _store.default.getState();
-  const learningContextId = _redux.selectors.app.learningContextId(state);
-  const blockId = _redux.selectors.app.blockId(state);
+const postUploadRedirect = storeState => {
+  const learningContextId = _redux.selectors.app.learningContextId(storeState);
+  const blockId = _redux.selectors.app.blockId(storeState);
   return videoUrl => navigateTo(`/course/${learningContextId}/editor/video/${blockId}?selectedVideoUrl=${videoUrl}`);
 };
-exports.onUrlUploaded = onUrlUploaded;
+exports.postUploadRedirect = postUploadRedirect;
+const onVideoUpload = () => {
+  const storeState = _store.default.getState();
+  return _module.postUploadRedirect(storeState);
+};
+exports.onVideoUpload = onVideoUpload;
+const useUploadVideo = async _ref => {
+  let {
+    dispatch,
+    supportedFiles,
+    setLoadSpinner,
+    postUploadRedirectFunction
+  } = _ref;
+  dispatch(_redux.thunkActions.video.uploadVideo({
+    supportedFiles,
+    setLoadSpinner,
+    postUploadRedirectFunction
+  }));
+};
+exports.useUploadVideo = useUploadVideo;
 var _default = {
-  uploadVideo
+  postUploadRedirect,
+  onVideoUpload,
+  useUploadVideo
 };
 exports.default = _default;
 //# sourceMappingURL=hooks.js.map

@@ -26,6 +26,7 @@ function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typ
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 const hooks = {
   state: {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     inDeleteConfirmation: args => _react.default.useState(args)
   },
   setUpDeleteConfirmation: () => {
@@ -51,50 +52,54 @@ const Transcript = _ref => {
     launchDeleteConfirmation,
     cancelDelete
   } = _module.hooks.setUpDeleteConfirmation();
-  return /*#__PURE__*/(0, _jsxRuntime.jsx)(_jsxRuntime.Fragment, {
-    children: inDeleteConfirmation ? /*#__PURE__*/(0, _jsxRuntime.jsxs)(_paragon.Card, {
-      className: "mb-2",
-      children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Card.Header, {
-        title: /*#__PURE__*/(0, _jsxRuntime.jsx)(_i18n.FormattedMessage, _objectSpread({}, _messages.default.deleteConfirmationHeader))
-      }), /*#__PURE__*/(0, _jsxRuntime.jsxs)(_paragon.Card.Body, {
-        children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Card.Section, {
-          children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_i18n.FormattedMessage, _objectSpread({}, _messages.default.deleteConfirmationMessage))
-        }), /*#__PURE__*/(0, _jsxRuntime.jsxs)(_paragon.Card.Footer, {
-          children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Button, {
-            variant: "tertiary",
-            className: "mb-2 mb-sm-0",
-            onClick: cancelDelete,
-            children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_i18n.FormattedMessage, _objectSpread({}, _messages.default.cancelDeleteLabel))
-          }), /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Button, {
-            variant: "danger",
-            className: "mb-2 mb-sm-0",
-            onClick: () => {
-              deleteTranscript({
-                language
-              });
-              // stop showing the card
-              cancelDelete();
-            },
-            children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_i18n.FormattedMessage, _objectSpread({}, _messages.default.confirmDeleteLabel))
+  return (
+    /*#__PURE__*/
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    (0, _jsxRuntime.jsx)(_jsxRuntime.Fragment, {
+      children: inDeleteConfirmation ? /*#__PURE__*/(0, _jsxRuntime.jsxs)(_paragon.Card, {
+        className: "mb-2",
+        children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Card.Header, {
+          title: /*#__PURE__*/(0, _jsxRuntime.jsx)(_i18n.FormattedMessage, _objectSpread({}, _messages.default.deleteConfirmationHeader))
+        }), /*#__PURE__*/(0, _jsxRuntime.jsxs)(_paragon.Card.Body, {
+          children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Card.Section, {
+            children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_i18n.FormattedMessage, _objectSpread({}, _messages.default.deleteConfirmationMessage))
+          }), /*#__PURE__*/(0, _jsxRuntime.jsxs)(_paragon.Card.Footer, {
+            children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Button, {
+              variant: "tertiary",
+              className: "mb-2 mb-sm-0",
+              onClick: cancelDelete,
+              children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_i18n.FormattedMessage, _objectSpread({}, _messages.default.cancelDeleteLabel))
+            }), /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Button, {
+              variant: "danger",
+              className: "mb-2 mb-sm-0",
+              onClick: () => {
+                deleteTranscript({
+                  language
+                });
+                // stop showing the card
+                cancelDelete();
+              },
+              children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_i18n.FormattedMessage, _objectSpread({}, _messages.default.confirmDeleteLabel))
+            })]
           })]
         })]
-      })]
-    }) : /*#__PURE__*/(0, _jsxRuntime.jsxs)(_paragon.ActionRow, {
-      children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_LanguageSelector.default, {
-        title: index,
-        language: language
-      }), /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.ActionRow.Spacer, {}), language === '' ? /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.IconButton, {
-        iconAs: _paragon.Icon,
-        src: _icons.DeleteOutline,
-        onClick: () => launchDeleteConfirmation()
-      }) : /*#__PURE__*/(0, _jsxRuntime.jsx)(_TranscriptActionMenu.default, {
-        index: index,
-        language: language,
-        transcriptUrl: transcriptUrl,
-        launchDeleteConfirmation: launchDeleteConfirmation
-      })]
+      }) : /*#__PURE__*/(0, _jsxRuntime.jsxs)(_paragon.ActionRow, {
+        children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_LanguageSelector.default, {
+          title: index,
+          language: language
+        }), /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.ActionRow.Spacer, {}), language === '' ? /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.IconButton, {
+          iconAs: _paragon.Icon,
+          src: _icons.DeleteOutline,
+          onClick: () => launchDeleteConfirmation()
+        }) : /*#__PURE__*/(0, _jsxRuntime.jsx)(_TranscriptActionMenu.default, {
+          index: index,
+          language: language,
+          transcriptUrl: transcriptUrl,
+          launchDeleteConfirmation: launchDeleteConfirmation
+        })]
+      })
     })
-  });
+  );
 };
 exports.Transcript = Transcript;
 Transcript.defaultProps = {

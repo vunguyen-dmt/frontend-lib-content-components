@@ -10,6 +10,8 @@ var _paragon = require("@edx/paragon");
 var _icons = require("@edx/paragon/icons");
 var _i18n = require("@edx/frontend-platform/i18n");
 var _messages = _interopRequireDefault(require("./messages"));
+var _MultiSelectFilterDropdown = _interopRequireDefault(require("./MultiSelectFilterDropdown"));
+var _utils = require("../../containers/VideoGallery/utils");
 var _jsxRuntime = require("react/jsx-runtime");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
@@ -24,18 +26,13 @@ const SearchSort = _ref => {
     clearSearchString,
     sortBy,
     onSortClick,
-    sortKeys,
-    sortMessages,
     filterBy,
     onFilterClick,
-    filterKeys,
-    filterMessages,
     showSwitch,
     switchMessage,
-    onSwitchClick,
-    // injected
-    intl
+    onSwitchClick
   } = _ref;
+  const intl = (0, _i18n.useIntl)();
   return /*#__PURE__*/(0, _jsxRuntime.jsxs)(_paragon.ActionRow, {
     children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Form.Group, {
       style: {
@@ -46,6 +43,7 @@ const SearchSort = _ref => {
         onChange: onSearchChange,
         placeholder: intl.formatMessage(_messages.default.searchPlaceholder),
         trailingElement: searchString ? /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.IconButton, {
+          alt: intl.formatMessage(_messages.default.clearSearch),
           iconAs: _paragon.Icon,
           invertColors: true,
           isActive: true,
@@ -57,30 +55,16 @@ const SearchSort = _ref => {
         }),
         value: searchString
       })
-    }), !showSwitch && /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.ActionRow.Spacer, {}), /*#__PURE__*/(0, _jsxRuntime.jsxs)(_paragon.Dropdown, {
-      children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Dropdown.Toggle, {
-        className: "text-gray-700",
-        id: "gallery-sort-button",
-        variant: "tertiary",
-        children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_i18n.FormattedMessage, _objectSpread({}, sortMessages[sortBy]))
-      }), /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Dropdown.Menu, {
-        children: Object.keys(sortKeys).map(key => /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Dropdown.Item, {
-          onClick: onSortClick(key),
-          children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_i18n.FormattedMessage, _objectSpread({}, sortMessages[key]))
-        }, key))
-      })]
-    }), filterKeys && filterMessages && /*#__PURE__*/(0, _jsxRuntime.jsxs)(_paragon.Dropdown, {
-      children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Dropdown.Toggle, {
-        className: "text-gray-700",
-        id: "gallery-filter-button",
-        variant: "tertiary",
-        children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_i18n.FormattedMessage, _objectSpread({}, filterMessages[filterBy]))
-      }), /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Dropdown.Menu, {
-        children: Object.keys(filterKeys).map(key => /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Dropdown.Item, {
-          onClick: onFilterClick(key),
-          children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_i18n.FormattedMessage, _objectSpread({}, filterMessages[key]))
-        }, key))
-      })]
+    }), !showSwitch && /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.ActionRow.Spacer, {}), /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.SelectMenu, {
+      variant: "link",
+      children: Object.keys(_utils.sortKeys).map(key => /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.MenuItem, {
+        onClick: onSortClick(key),
+        defaultSelected: key === sortBy,
+        children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_i18n.FormattedMessage, _objectSpread({}, _utils.sortMessages[key]))
+      }, key))
+    }), onFilterClick && /*#__PURE__*/(0, _jsxRuntime.jsx)(_MultiSelectFilterDropdown.default, {
+      selected: filterBy,
+      onSelectionChange: onFilterClick
     }), showSwitch && /*#__PURE__*/(0, _jsxRuntime.jsxs)(_jsxRuntime.Fragment, {
       children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.ActionRow.Spacer, {}), /*#__PURE__*/(0, _jsxRuntime.jsx)(_paragon.Form.SwitchSet, {
         name: "switch",
@@ -100,8 +84,6 @@ exports.SearchSort = SearchSort;
 SearchSort.defaultProps = {
   filterBy: '',
   onFilterClick: null,
-  filterKeys: null,
-  filterMessages: null,
   showSwitch: false,
   onSwitchClick: null
 };
@@ -111,18 +93,12 @@ SearchSort.propTypes = {
   clearSearchString: _propTypes.default.func.isRequired,
   sortBy: _propTypes.default.string.isRequired,
   onSortClick: _propTypes.default.func.isRequired,
-  sortKeys: _propTypes.default.shape({}).isRequired,
-  sortMessages: _propTypes.default.shape({}).isRequired,
-  filterBy: _propTypes.default.string,
+  filterBy: _propTypes.default.arrayOf(_propTypes.default.string),
   onFilterClick: _propTypes.default.func,
-  filterKeys: _propTypes.default.shape({}),
-  filterMessages: _propTypes.default.shape({}),
   showSwitch: _propTypes.default.bool,
   switchMessage: _propTypes.default.shape({}).isRequired,
-  onSwitchClick: _propTypes.default.func,
-  // injected
-  intl: _i18n.intlShape.isRequired
+  onSwitchClick: _propTypes.default.func
 };
-var _default = (0, _i18n.injectIntl)(SearchSort);
+var _default = SearchSort;
 exports.default = _default;
 //# sourceMappingURL=SearchSort.js.map

@@ -23,12 +23,15 @@ const {
 exports.navigateTo = navigateTo;
 const hooks = {
   initialize: (dispatch, selectedVideoId, selectedVideoUrl) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     _react.default.useEffect(() => {
       dispatch(_redux.thunkActions.video.loadVideoData(selectedVideoId, selectedVideoUrl));
     }, []);
   },
   returnToGallery: () => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const learningContextId = (0, _reactRedux.useSelector)(_redux.selectors.app.learningContextId);
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const blockId = (0, _reactRedux.useSelector)(_redux.selectors.app.blockId);
     return () => navigateTo(`/course/${learningContextId}/editor/course-videos/${blockId}`);
   }
@@ -37,7 +40,8 @@ exports.hooks = hooks;
 const VideoEditorModal = _ref => {
   let {
     close,
-    isOpen
+    isOpen,
+    isLibrary
   } = _ref;
   const dispatch = (0, _reactRedux.useDispatch)();
   const searchParams = new URLSearchParams(document.location.search);
@@ -48,7 +52,8 @@ const VideoEditorModal = _ref => {
   return /*#__PURE__*/(0, _jsxRuntime.jsx)(_VideoSettingsModal.default, {
     close,
     isOpen,
-    onReturn
+    onReturn,
+    isLibrary
   });
   // TODO: add logic to show SelectVideoModal if no selection
 };
@@ -56,7 +61,8 @@ const VideoEditorModal = _ref => {
 VideoEditorModal.defaultProps = {};
 VideoEditorModal.propTypes = {
   close: _propTypes.default.func.isRequired,
-  isOpen: _propTypes.default.bool.isRequired
+  isOpen: _propTypes.default.bool.isRequired,
+  isLibrary: _propTypes.default.bool.isRequired
 };
 var _default = VideoEditorModal;
 exports.default = _default;

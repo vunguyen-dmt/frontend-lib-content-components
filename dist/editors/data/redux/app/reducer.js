@@ -44,7 +44,8 @@ const app = (0, _toolkit.createSlice)({
         lmsEndpointUrl: payload.lmsEndpointUrl,
         blockId: payload.blockId,
         learningContextId: payload.learningContextId,
-        blockType: payload.blockType
+        blockType: payload.blockType,
+        blockValue: null
       });
     },
     setUnitUrl: (state, _ref2) => {

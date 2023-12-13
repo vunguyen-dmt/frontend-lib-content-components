@@ -25,7 +25,10 @@ const durationWidget = _ref => {
     duration: val
   });
   const initialState = _module.durationString(duration);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [unsavedDuration, setUnsavedDuration] = (0, _react.useState)(initialState);
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   (0, _react.useEffect)(() => {
     setUnsavedDuration(_module.durationString(duration));
   }, [duration]);

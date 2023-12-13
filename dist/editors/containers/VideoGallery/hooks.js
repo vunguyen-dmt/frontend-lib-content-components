@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.videoProps = exports.videoListProps = exports.state = exports.searchAndSortProps = exports.navigateTo = exports.navigateCallback = exports.handleVideoUpload = exports.handleCancel = exports.getstatusBadgeVariant = exports.filterListByStatus = exports.filterListBySearch = exports.filterListByHideSelectedCourse = exports.filterList = exports.fileInputProps = exports.default = exports.buildVideos = void 0;
+exports.useVideoUploadHandler = exports.useVideoProps = exports.useVideoListProps = exports.useSearchAndSortProps = exports.useCancelHandler = exports.navigateTo = exports.navigateCallback = exports.getstatusBadgeVariant = exports.filterListByStatus = exports.filterListBySearch = exports.filterListByHideSelectedCourse = exports.filterList = exports.default = exports.buildVideos = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _reactRedux = require("react-redux");
 var _module = _interopRequireWildcard(require("./hooks"));
@@ -26,21 +26,18 @@ const {
 } = appHooks;
 exports.navigateTo = navigateTo;
 exports.navigateCallback = navigateCallback;
-const state = {
-  highlighted: val => _react.default.useState(val),
-  searchString: val => _react.default.useState(val),
-  showSelectVideoError: val => _react.default.useState(val),
-  showSizeError: val => _react.default.useState(val),
-  sortBy: val => _react.default.useState(val),
-  filertBy: val => _react.default.useState(val),
-  hideSelectedVideos: val => _react.default.useState(val)
-};
-exports.state = state;
-const searchAndSortProps = () => {
-  const [searchString, setSearchString] = _module.state.searchString('');
-  const [sortBy, setSortBy] = _module.state.sortBy(_utils.sortKeys.dateNewest);
-  const [filterBy, setFilterBy] = _module.state.filertBy(_utils.filterKeys.videoStatus);
-  const [hideSelectedVideos, setHideSelectedVideos] = _module.state.hideSelectedVideos(false);
+const useSearchAndSortProps = () => {
+  const [searchString, setSearchString] = _react.default.useState('');
+  const [sortBy, setSortBy] = _react.default.useState(_utils.sortKeys.dateNewest);
+  const [filterBy, setFilterBy] = _react.default.useState([]);
+  const [hideSelectedVideos, setHideSelectedVideos] = _react.default.useState(false);
+  const handleFilter = key => () => {
+    if (filterBy.includes(key)) {
+      setFilterBy(filterBy.filter(item => item !== key));
+    } else {
+      setFilterBy([...filterBy, key]);
+    }
+  };
   return {
     searchString,
     onSearchChange: e => setSearchString(e.target.value),
@@ -50,16 +47,14 @@ const searchAndSortProps = () => {
     sortKeys: _utils.sortKeys,
     sortMessages: _utils.sortMessages,
     filterBy,
-    onFilterClick: key => () => setFilterBy(key),
-    filterKeys: _utils.filterKeys,
-    filterMessages: _utils.filterMessages,
-    showSwitch: true,
+    onFilterClick: handleFilter,
+    showSwitch: false,
     hideSelectedVideos,
     switchMessage: _messages.default.hideSelectedCourseVideosSwitchLabel,
     onSwitchClick: () => setHideSelectedVideos(!hideSelectedVideos)
   };
 };
-exports.searchAndSortProps = searchAndSortProps;
+exports.useSearchAndSortProps = useSearchAndSortProps;
 const filterListBySearch = _ref => {
   let {
     searchString,
@@ -78,14 +73,14 @@ const filterListByStatus = _ref3 => {
     statusFilter,
     videoList
   } = _ref3;
-  if (statusFilter === _utils.filterKeys.videoStatus) {
+  if (statusFilter.length === 0) {
     return videoList;
   }
   return videoList.filter(_ref4 => {
     let {
       status
     } = _ref4;
-    return status === statusFilter;
+    return statusFilter.map(key => _utils.filterKeys[key]).includes(status);
   });
 };
 exports.filterListByStatus = filterListByStatus;
@@ -120,14 +115,14 @@ const filterList = _ref6 => {
   return filteredList.sort(_utils.sortFunctions[sortBy in _utils.sortKeys ? _utils.sortKeys[sortBy] : _utils.sortKeys.dateNewest]);
 };
 exports.filterList = filterList;
-const videoListProps = _ref7 => {
+const useVideoListProps = _ref7 => {
   let {
     searchSortProps,
     videos
   } = _ref7;
-  const [highlighted, setHighlighted] = _module.state.highlighted(null);
-  const [showSelectVideoError, setShowSelectVideoError] = _module.state.showSelectVideoError(false);
-  const [showSizeError, setShowSizeError] = _module.state.showSizeError(false);
+  const [highlighted, setHighlighted] = _react.default.useState(null);
+  const [showSelectVideoError, setShowSelectVideoError] = _react.default.useState(false);
+  const [showSizeError, setShowSizeError] = _react.default.useState(false);
   const filteredList = _module.filterList(_objectSpread(_objectSpread({}, searchSortProps), {}, {
     videos
   }));
@@ -168,26 +163,19 @@ const videoListProps = _ref7 => {
     }
   };
 };
-exports.videoListProps = videoListProps;
-const fileInputProps = () => {
-  const click = _module.handleVideoUpload();
-  return {
-    click
-  };
-};
-exports.fileInputProps = fileInputProps;
-const handleVideoUpload = () => {
+exports.useVideoListProps = useVideoListProps;
+const useVideoUploadHandler = () => {
   const learningContextId = (0, _reactRedux.useSelector)(_redux.selectors.app.learningContextId);
   const blockId = (0, _reactRedux.useSelector)(_redux.selectors.app.blockId);
   return () => navigateTo(`/course/${learningContextId}/editor/video_upload/${blockId}`);
 };
-exports.handleVideoUpload = handleVideoUpload;
-const handleCancel = () => navigateCallback({
+exports.useVideoUploadHandler = useVideoUploadHandler;
+const useCancelHandler = () => navigateCallback({
   destination: (0, _reactRedux.useSelector)(_redux.selectors.app.returnUrl),
   analytics: (0, _reactRedux.useSelector)(_redux.selectors.app.analytics),
   analyticsEvent: _analyticsEvt.default.videoGalleryCancelClick
 });
-exports.handleCancel = handleCancel;
+exports.useCancelHandler = useCancelHandler;
 const buildVideos = _ref8 => {
   let {
     rawVideos
@@ -199,7 +187,7 @@ const buildVideos = _ref8 => {
       id: video.edx_video_id,
       displayName: video.client_video_id,
       externalUrl: video.course_video_image_url,
-      dateAdded: video.created,
+      dateAdded: new Date(video.created),
       locked: false,
       thumbnail: video.course_video_image_url,
       status: video.status,
@@ -228,12 +216,12 @@ const getstatusBadgeVariant = _ref9 => {
   }
 };
 exports.getstatusBadgeVariant = getstatusBadgeVariant;
-const videoProps = _ref10 => {
+const useVideoProps = _ref10 => {
   let {
     videos
   } = _ref10;
-  const searchSortProps = _module.searchAndSortProps();
-  const videoList = _module.videoListProps({
+  const searchSortProps = useSearchAndSortProps();
+  const videoList = useVideoListProps({
     searchSortProps,
     videos
   });
@@ -243,7 +231,9 @@ const videoProps = _ref10 => {
     inputError,
     selectBtnProps
   } = videoList;
-  const fileInput = _module.fileInputProps();
+  const fileInput = {
+    click: useVideoUploadHandler()
+  };
   return {
     galleryError,
     inputError,
@@ -253,12 +243,12 @@ const videoProps = _ref10 => {
     selectBtnProps
   };
 };
-exports.videoProps = videoProps;
+exports.useVideoProps = useVideoProps;
 var _default = {
-  videoProps,
+  useVideoProps,
   buildVideos,
-  handleCancel,
-  handleVideoUpload
+  useCancelHandler,
+  useVideoUploadHandler
 };
 exports.default = _default;
 //# sourceMappingURL=hooks.js.map

@@ -37,6 +37,7 @@ const BaseModal = _ref => {
     hasCloseButton: true,
     isFullscreenOnMobile: true,
     isFullscreenScroll: isFullscreenScroll,
+    title: title,
     children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)(_paragon.ModalDialog.Header, {
       style: {
         zIndex: 1,

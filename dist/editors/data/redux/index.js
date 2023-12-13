@@ -16,6 +16,7 @@ var app = _interopRequireWildcard(require("./app"));
 var requests = _interopRequireWildcard(require("./requests"));
 var video = _interopRequireWildcard(require("./video"));
 var problem = _interopRequireWildcard(require("./problem"));
+var game = _interopRequireWildcard(require("./game"));
 var _thunkActions = _interopRequireDefault(require("./thunkActions"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
@@ -29,7 +30,8 @@ const modules = {
   app,
   requests,
   video,
-  problem
+  problem,
+  game
 };
 const moduleProps = propName => Object.keys(modules).reduce((obj, moduleKey) => _objectSpread(_objectSpread({}, obj), {}, {
   [moduleKey]: modules[moduleKey][propName]

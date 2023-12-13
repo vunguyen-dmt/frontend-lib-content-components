@@ -163,6 +163,7 @@ describe('TitleHeader hooks', () => {
         });
       });
       afterEach(() => {
+        // eslint-disable-next-line no-import-assign
         hooks.hooks = oldHooks;
       });
       it('returns isEditing, startEditing, and stopEditing, tied to the isEditing hook', () => {

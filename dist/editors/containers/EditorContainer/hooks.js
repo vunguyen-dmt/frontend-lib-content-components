@@ -26,6 +26,7 @@ exports.nullMethod = nullMethod;
 exports.navigateCallback = navigateCallback;
 exports.clearSaveError = clearSaveError;
 const state = (0, _utils.StrictDict)({
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   isCancelConfirmModalOpen: val => (0, _react.useState)(val)
 });
 exports.state = state;
@@ -33,9 +34,13 @@ const handleSaveClicked = _ref => {
   let {
     dispatch,
     getContent,
-    validateEntry
+    validateEntry,
+    returnFunction
   } = _ref;
-  const destination = (0, _reactRedux.useSelector)(_redux.selectors.app.returnUrl);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const returnUrl = (0, _reactRedux.useSelector)(_redux.selectors.app.returnUrl);
+  const destination = returnFunction ? '' : returnUrl;
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const analytics = (0, _reactRedux.useSelector)(_redux.selectors.app.analytics);
   return () => saveBlock({
     analytics,
@@ -44,6 +49,7 @@ const handleSaveClicked = _ref => {
     }),
     destination,
     dispatch,
+    returnFunction,
     validateEntry
   });
 };
@@ -59,19 +65,29 @@ const cancelConfirmModalToggle = () => {
 exports.cancelConfirmModalToggle = cancelConfirmModalToggle;
 const handleCancel = _ref2 => {
   let {
-    onClose
+    onClose,
+    returnFunction
   } = _ref2;
   if (onClose) {
     return onClose;
   }
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const returnUrl = (0, _reactRedux.useSelector)(_redux.selectors.app.returnUrl);
   return navigateCallback({
-    destination: (0, _reactRedux.useSelector)(_redux.selectors.app.returnUrl),
+    returnFunction,
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    destination: returnFunction ? '' : returnUrl,
     analyticsEvent: _analyticsEvt.default.editorCancelClick,
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     analytics: (0, _reactRedux.useSelector)(_redux.selectors.app.analytics)
   });
 };
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
 exports.handleCancel = handleCancel;
 const isInitialized = () => (0, _reactRedux.useSelector)(_redux.selectors.app.isInitialized);
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
 exports.isInitialized = isInitialized;
 const saveFailed = () => (0, _reactRedux.useSelector)(rootState => _redux.selectors.requests.isFailed(rootState, {
   requestKey: _requests.RequestKeys.saveBlock

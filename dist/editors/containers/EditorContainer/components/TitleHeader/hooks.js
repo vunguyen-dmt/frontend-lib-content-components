@@ -17,11 +17,13 @@ const {
 } = textEditorHooks;
 exports.navigateCallback = navigateCallback;
 const state = {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   localTitle: args => _react.default.useState(args)
 };
 exports.state = state;
 const hooks = {
   isEditing: () => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [isEditing, setIsEditing] = _react.default.useState(false);
     return {
       isEditing,
@@ -34,6 +36,7 @@ const hooks = {
       dispatch,
       stopEditing
     } = _ref;
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const title = (0, _reactRedux.useSelector)(_redux.selectors.app.displayTitle);
     const [localTitle, setLocalTitle] = _module.state.localTitle(title);
     return {

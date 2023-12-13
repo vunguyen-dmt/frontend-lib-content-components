@@ -20,10 +20,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const VideoEditor = _ref => {
   let {
     onClose,
+    returnFunction,
     // injected
     intl,
     // redux
-    studioViewFinished
+    studioViewFinished,
+    isLibrary
   } = _ref;
   const {
     error,
@@ -34,10 +36,13 @@ const VideoEditor = _ref => {
     children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_EditorContainer.default, {
       getContent: (0, _hooks.fetchVideoContent)(),
       onClose: onClose,
+      returnFunction: returnFunction,
       validateEntry: validateEntry,
       children: studioViewFinished ? /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
         className: "video-editor",
-        children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_VideoEditorModal.default, {})
+        children: /*#__PURE__*/(0, _jsxRuntime.jsx)(_VideoEditorModal.default, {
+          isLibrary
+        })
       }) : /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
         style: {
           position: 'absolute',
@@ -56,19 +61,23 @@ const VideoEditor = _ref => {
 };
 exports.VideoEditor = VideoEditor;
 VideoEditor.defaultProps = {
-  onClose: null
+  onClose: null,
+  returnFunction: null
 };
 VideoEditor.propTypes = {
   onClose: _propTypes.default.func,
+  returnFunction: _propTypes.default.func,
   // injected
   intl: _i18n.intlShape.isRequired,
   // redux
-  studioViewFinished: _propTypes.default.bool.isRequired
+  studioViewFinished: _propTypes.default.bool.isRequired,
+  isLibrary: _propTypes.default.bool.isRequired
 };
 const mapStateToProps = state => ({
   studioViewFinished: _redux.selectors.requests.isFinished(state, {
     requestKey: _requests.RequestKeys.fetchStudioView
-  })
+  }),
+  isLibrary: _redux.selectors.app.isLibrary(state)
 });
 exports.mapStateToProps = mapStateToProps;
 const mapDispatchToProps = {};
