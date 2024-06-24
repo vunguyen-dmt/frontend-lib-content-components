@@ -33,7 +33,7 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
         quickToolbar,
         plugins.a11ychecker,
         plugins.powerpaste,
-        plugins.embediframe,
+        // plugins.embediframe,
         plugins.media
       ].join(' '),
       menubar: false,
@@ -58,7 +58,7 @@ const pluginConfig = ({ isLibrary, placeholder, editorType }) => {
         ],
         [buttons.image, buttons.media, buttons.link, buttons.unlink, buttons.blockQuote, buttons.codeBlock],
         [buttons.table, buttons.emoticons, buttons.charmap, buttons.wirisMathType, buttons.wirisChemType, buttons.hr],
-        [buttons.removeFormat, codeButton, buttons.a11ycheck, buttons.embediframe],
+        [buttons.removeFormat, codeButton, buttons.a11ycheck],
       ]) : false,
       // imageToolbar: mapToolbars([
       //   // [buttons.rotate.left, buttons.rotate.right],
