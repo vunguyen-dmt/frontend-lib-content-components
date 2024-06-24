@@ -3,6 +3,8 @@ import { Provider, connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Editor } from '@tinymce/tinymce-react';
 
+import 'tinymce/plugins/media';
+
 import 'tinymce';
 import 'tinymce/themes/silver';
 import 'tinymce/skins/ui/oxide/skin.css';
