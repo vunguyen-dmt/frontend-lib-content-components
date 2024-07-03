@@ -25,7 +25,7 @@ export const VideoSettingsModal = ({
   isLibrary,
 }) => (
   <>
-    {!isLibrary && (
+    {false && !isLibrary && (
       <Button
         variant="link"
         className="text-primary-500"
